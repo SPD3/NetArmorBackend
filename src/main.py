@@ -1,5 +1,23 @@
-print("Hello Back End")
+import strawberry
 
-import fastapi
+from fastapi import FastAPI
+from strawberry.fastapi import GraphQLRouter
 
-print("Successful import of fastapi")
+@strawberry.type
+class Query:
+    @strawberry.field
+    def hello(self) -> str:
+        return "Hello World"
+
+
+schema = strawberry.Schema(Query)
+
+graphql_app = GraphQLRouter(schema)
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+app.include_router(graphql_app, prefix="/graphql")
