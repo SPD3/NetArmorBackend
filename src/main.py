@@ -3,6 +3,7 @@ import strawberry
 
 from fastapi import Depends, FastAPI, HTTPException
 from strawberry.fastapi import GraphQLRouter
+from fastapi.middleware.cors import CORSMiddleware
 from strawberry.types import Info
 from sqlalchemy.orm import Session
 
@@ -11,11 +12,32 @@ from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
+
+
 app = FastAPI()
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.get("/AccountExists")
+def account_exists():
+    print("YAYAYAYAYAYAYAYAYAYAYAYAYYA")
+    return True
+
+
 
 # Dependency
 def get_db():
@@ -24,6 +46,14 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.post("/CreateAccount/")
+def create_account(account : schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=account.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    crud.create_user(db=db, user=account)
+    return True
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
