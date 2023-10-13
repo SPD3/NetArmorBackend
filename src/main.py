@@ -1,10 +1,7 @@
 from typing import List
-import strawberry
 
 from fastapi import Depends, FastAPI, HTTPException
-from strawberry.fastapi import GraphQLRouter
 from fastapi.middleware.cors import CORSMiddleware
-from strawberry.types import Info
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
@@ -39,12 +36,12 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/AccountExists")
-def account_exists(account : schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=account.email)
+@app.get("/AccountExists/")
+def account_exists(email: str, password: str, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=email)
     if db_user:
-        return True
-    return False
+        return "true"
+    return "false"
 
 @app.post("/CreateAccount/")
 def create_account(account : schemas.UserCreate, db: Session = Depends(get_db)):
@@ -52,7 +49,6 @@ def create_account(account : schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     crud.create_user(db=db, user=account)
-    return True
 
 
 @app.get("/users/", response_model=List[schemas.User])
