@@ -27,8 +27,6 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -40,8 +38,8 @@ def get_db():
 def account_exists(email: str, password: str, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=email)
     if db_user:
-        return "true"
-    return "false"
+        return True
+    return False
 
 @app.post("/CreateAccount/")
 def create_account(account : schemas.UserCreate, db: Session = Depends(get_db)):
@@ -49,6 +47,13 @@ def create_account(account : schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     crud.create_user(db=db, user=account)
+
+@app.get("/CheckCredentials/")
+def check_credentials(email: str, password: str, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=email)
+    if db_user is None:
+        return False
+    return db_user.password == password
 
 
 @app.get("/users/", response_model=List[schemas.User])
