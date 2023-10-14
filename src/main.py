@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
+from src.database import SQLALCHEMY_DATABASE_URL
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -55,8 +57,11 @@ def check_credentials(email: str, password: str, db: Session = Depends(get_db)):
         return False
     return db_user.password == password
 
-
 @app.get("/users/", response_model=List[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
+
+@app.get("/info")
+def info():
+    return SQLALCHEMY_DATABASE_URL
