@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from src.config import get_settings
+from src.config import settings
 
-settings = get_settings()
+
 SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://" + settings.POSTGRES_USER + ":" + settings.POSTGRES_PASSWORD+ "@"+ settings.POSTGRES_NAME + ":"+ settings.POSTGRES_PORT+ "/" + settings.POSTGRES_DB
 
 engine = create_engine(

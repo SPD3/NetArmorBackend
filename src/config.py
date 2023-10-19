@@ -12,3 +12,8 @@ class Settings(BaseSettings):
     POSTGRES_DB : str
     POSTGRES_PORT : str
     POSTGRES_NAME : str
+
+    DATABASE_API_PORT : str
+    DATABASE_API_HOST_NAME : str
+
+settings = get_settings()
