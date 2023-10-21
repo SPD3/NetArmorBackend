@@ -18,6 +18,8 @@ from wsgiref.simple_server import make_server
 from tg.util import Bunch
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from src.netarmor_api import App, Endpoint
+
 
 models.Base.metadata.create_all(bind=engine)
 DBSession = scoped_session(sessionmaker(autoflush=True, autocommit=False))
@@ -25,87 +27,42 @@ DBSession = scoped_session(sessionmaker(autoflush=True, autocommit=False))
 def init_model(engine):
     DBSession.configure(bind=engine)
 
-class CreateAccountController(RestController):
-    def _before(self, *args, **kw):
-        tg.response.headers.update({'Access-Control-Allow-Origin': '*',
-                                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-                                    'Access-Control-Allow-Methods' : 'GET, POST, PUT'})
+def get_users(skip: int = 0, limit: int = 100):
+    users = crud.get_users(DBSession, skip=skip, limit=limit)
+    ret = []
+    for i, user in enumerate(users):
+        ret.append({"id" : i, "email" : user.email})
+    return ret
 
-    @with_trailing_slash
-    @expose()
-    def get(self):
-        return {"data" : "Hello World"}
 
-    @expose()
-    @decode_params('json')
-    def post(self, *args, **kw):
-        email = kw["email"]
-        password = kw["password"]
-        db_user = crud.get_user_by_email(DBSession, email=email)
-        #TODO: Look into better error handling so that the react side can see this...
-        if db_user:
-            return {"err": "Email already registered"}
-        crud.create_user(db=DBSession, email=email, password=password)
-        return {"data": True, "args" : args, "kw" : kw}
-    
-class AccountExistsController(RestController):
-    def _before(self, *args, **kw):
-        tg.response.headers.update({'Access-Control-Allow-Origin': '*'})
+def check_credential(email, password):
+    db_user = crud.get_user_by_email(DBSession, email=email)
+    if db_user is None:
+        return {"data" : False}
+    return db_user.password == password
 
-    @with_trailing_slash
-    @expose()
-    def get(self, email):
-        db_user = crud.get_user_by_email(DBSession, email=email)
-        return {"data" : db_user is not None}
-    
-class CheckCredentialsController(RestController):
-    def _before(self, *args, **kw):
-        tg.response.headers.update({'Access-Control-Allow-Origin': '*'})
-        
 
-    @with_trailing_slash
-    @expose()
-    def get(self, email, password):
-        db_user = crud.get_user_by_email(DBSession, email=email)
-        if db_user is None:
-            return {"data" : False}
-        return {"data" : db_user.password == password}
-    
-class UsersController(RestController):
-    def _before(self, *args, **kw):
-        tg.response.headers.update({'Access-Control-Allow-Origin': '*'})
+def account_exists(email, password):
+    db_user = crud.get_user_by_email(DBSession, email=email)
+    return db_user is not None
 
-    @with_trailing_slash
-    @expose()
-    def get(self, skip: int = 0, limit: int = 100):
-        users = crud.get_users(DBSession, skip=skip, limit=limit)
-        ret = []
-        for i, user in enumerate(users):
-            ret.append({"id" : i, "email" : user.email})
-        return {"data" : ret}
+def create_account(email, password):
+    db_user = crud.get_user_by_email(DBSession, email=email)
+    #TODO: Look into better error handling so that the react side can see this...
+    if db_user:
+        return False
+    crud.create_user(db=DBSession, email=email, password=password)
+    return True
 
-class RootController(TGController):
-    def _before(self, *args, **kw):
-        tg.response.headers.update({'Access-Control-Allow-Origin': '*',
-                                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-                                    'Access-Control-Allow-Methods' : 'GET, POST, PUT'})
+app = App()
 
-    CreateAccount = CreateAccountController()
-    AccountExists = AccountExistsController()
-    CheckCredentials = CheckCredentialsController()
-    users = UsersController()
-    
-config = AppConfig(minimal=True, root_controller=RootController())
-config['use_sqlalchemy'] = True
-config['sqlalchemy.url'] = SQLALCHEMY_DATABASE_URL
-config['model'] = Bunch(
+app.register_endpoint("users", get_users, Endpoint.GET)
+app.register_endpoint("CheckCredentials", check_credential, Endpoint.GET)
+app.register_endpoint("AccountExists", account_exists, Endpoint.GET)
+app.register_endpoint("CreateAccount", create_account, Endpoint.POST)
+
+model_bunch = Bunch(
     DBSession=DBSession,
     init_model=init_model
 )
-config.sa_auth.authmetadata = None
-
-application = config.make_wsgi_app()
-
-httpd = make_server(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), application)
-httpd.serve_forever()
-
+app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), SQLALCHEMY_DATABASE_URL, model_bunch)
