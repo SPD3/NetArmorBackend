@@ -27,6 +27,7 @@ class App:
         self.endpoints = {}
     
     def register_endpoint(self, path:str, func, endpoint:Endpoint):
+        path = str(path)
         path = path.split("/")
         path = [i for i in path if i != ""] 
         current_level = self.endpoints

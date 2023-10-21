@@ -1,20 +1,8 @@
-from http.client import HTTPException
-from typing import List
-
-from sqlalchemy.orm import Session
-
-from . import crud, models, schemas 
+from . import crud, models 
 from src.config import settings
-from .database import SessionLocal, engine
-
-
-import tg
-from tg import decode_params, expose, AppConfig
-from tg.controllers import RestController, TGController
-from tg.decorators import with_trailing_slash
+from .database import engine
 
 from src.database import SQLALCHEMY_DATABASE_URL
-from wsgiref.simple_server import make_server
 from tg.util import Bunch
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -33,7 +21,6 @@ def get_users(skip: int = 0, limit: int = 100):
     for i, user in enumerate(users):
         ret.append({"id" : i, "email" : user.email})
     return ret
-
 
 def check_credential(email, password):
     db_user = crud.get_user_by_email(DBSession, email=email)
