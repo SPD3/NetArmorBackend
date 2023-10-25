@@ -45,12 +45,10 @@ def register_endpoints(app:App):
     app.register_endpoint("CreateAccount", create_account, Endpoint.POST)
     app.register_endpoint("basic_endpoint", basic_endpoint, Endpoint.GET)
 
-
 def main():
     db = Database()
     app = App()
     register_endpoints(app)
-    
     
     def init_model(engine):
         db.get_session().configure(bind=engine)
