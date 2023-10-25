@@ -12,8 +12,8 @@ class Database():
         self.engine = create_engine(
             self.url
         )
-        models.Base.metadata.create_all(bind=self.engine)
-        self.session = scoped_session(sessionmaker(autoflush=True, autocommit=False))
+        Base.metadata.create_all(bind=self.engine)
+        self.session = scoped_session(sessionmaker(autoflush=True, autocommit=False, bind=self.engine))
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):

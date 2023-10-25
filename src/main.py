@@ -5,9 +5,6 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 
-
-
-
 def get_users(skip: int = 0, limit: int = 100):
     db_session = Database().get_session()
     users = crud.get_users(db_session, skip=skip, limit=limit)
@@ -63,3 +60,6 @@ def main():
         init_model=init_model
     )
     app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), db.get_url(), model_bunch)
+
+if __name__ == "__main__":
+    main()
