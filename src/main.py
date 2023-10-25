@@ -41,7 +41,7 @@ def create_account(email, password):
     crud.create_user(db=DBSession, email=email, password=password)
     return True
 
-def test_endpoint():
+def basic_endpoint():
     return "Hello World"
 
 app = App()
@@ -50,7 +50,7 @@ app.register_endpoint("users", get_users, Endpoint.GET)
 app.register_endpoint("CheckCredentials", check_credential, Endpoint.GET)
 app.register_endpoint("AccountExists", account_exists, Endpoint.GET)
 app.register_endpoint("CreateAccount", create_account, Endpoint.POST)
-app.register_endpoint("test_endpoint", test_endpoint, Endpoint.GET)
+app.register_endpoint("basic_endpoint", basic_endpoint, Endpoint.GET)
 
 model_bunch = Bunch(
     DBSession=DBSession,
