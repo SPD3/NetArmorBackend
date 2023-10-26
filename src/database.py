@@ -1,10 +1,7 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from src.config import settings
-from . import models
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-Base = declarative_base()
+from .models import Base
 
 class Database():
     def __init__(self) -> None:
