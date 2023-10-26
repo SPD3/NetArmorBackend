@@ -1,9 +1,6 @@
 from unittest.mock import patch
 import pytest
-from src.main import basic_endpoint, create_account
-from src.database import Database
-from src import models
-from sqlalchemy.orm import Query
+from src.main import basic_endpoint, create_account, account_exists
 
 def test_basic():
     assert 1 == 1
@@ -13,4 +10,5 @@ def test_basic_endpoint():
 
 def test_create_user():
     create_account("micky@mouse.com", "12345")
+    assert account_exists("micky@mouse.com", "12345")
     
