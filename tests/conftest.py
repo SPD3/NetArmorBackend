@@ -1,36 +1,9 @@
-
-import os
-from unittest.mock import MagicMock, patch
-
 import pytest
 import docker
 from docker import APIClient
 from docker.errors import NotFound
 
 from src.config import get_settings
-
-
-class Fake_Query:
-
-    def filter(*args, **kwargs):
-        return Fake_Query()
-    
-    def first(*args, **kwargs):
-        return None
-
-class Fake_Session:
-    def query(*args, **kwargs):
-        print("querying!")
-        return Fake_Query()
-
-    def add(*args, **kwargs):
-        print("adding!")
-
-    def commit(*args, **kwargs):
-        print("committing!")
-
-    def refresh(*args, **kwargs):
-        print("refreshing!")
 
 def set_up_empty_test_db():
     settings = get_settings()
