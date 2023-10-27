@@ -17,7 +17,7 @@ def check_credential(email, password):
     db_session = Database().get_session()
     db_user = crud.get_user_by_email(db_session, email=email)
     if db_user is None:
-        return {"data" : False}
+        return False
     return db_user.password == password
 
 
