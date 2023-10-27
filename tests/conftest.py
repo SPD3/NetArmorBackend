@@ -14,9 +14,11 @@ def set_up_empty_test_db():
     settings.POSTGRES_PORT = "8003"
     settings.POSTGRES_NAME = "localhost"
 
+    container_name = "TestDB"
+
     client = docker.from_env()
     try:
-        testdb = client.containers.get("TestDB")
+        testdb = client.containers.get(container_name)
         testdb.stop()
         testdb.remove()
     except NotFound:
@@ -25,7 +27,7 @@ def set_up_empty_test_db():
         "postgres:15",
         ports={5432: int(settings.POSTGRES_PORT)},
         detach=True,
-        name="TestDB",
+        name=container_name,
         environment=[
             "POSTGRES_PASSWORD=" + settings.POSTGRES_PASSWORD,
             "POSTGRES_USER=" + settings.POSTGRES_USER ,
