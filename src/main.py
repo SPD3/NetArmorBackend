@@ -49,7 +49,6 @@ def main():
     db = Database()
     app = App()
     register_endpoints(app)
-    # Change
     
     def init_model(engine):
         db.get_session().configure(bind=engine)
