@@ -23,6 +23,7 @@ class Database():
     def get_engine(self):
         return self.engine
     
-    def get_session(self):
-        self._session.rollback()
+    def get_session(self, roll_back=True):
+        if roll_back:
+            self._session.rollback()
         return self._session
