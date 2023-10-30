@@ -10,7 +10,7 @@ class Database():
             self.url
         )
         Base.metadata.create_all(bind=self.engine)
-        self.session = scoped_session(sessionmaker(autoflush=True, autocommit=False, bind=self.engine))
+        self._session = scoped_session(sessionmaker(autoflush=True, autocommit=False, bind=self.engine))
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -24,4 +24,5 @@ class Database():
         return self.engine
     
     def get_session(self):
-        return self.session
+        self._session.rollback()
+        return self._session
