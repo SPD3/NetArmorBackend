@@ -155,3 +155,101 @@ def test_duplicate_specialty_table():
     generic_duplicate_test(db_session, 
                 lambda: add_donald_specialty(db_session))
     db_session.rollback()
+    
+def test_add_scan():
+    db_session = Database().get_session()
+    
+    minnie_scan_id = 2
+    minnie_url = "minniemousewebsite.com"
+    minnie_email = "minnie@mouse.com"
+    minnie_password = "12346"
+    minnie_website_name = "Minnie's Website"
+    minnie_deep = True
+    minnie_date = date.today()
+    
+    generic_add_test(lambda: check_mickey_scan(db_session), 
+                     lambda: add_mickey_scan(db_session), 
+                     lambda: check_scan(db_session, minnie_scan_id, minnie_email, minnie_url, minnie_deep, minnie_date),
+                     lambda: add_scan(db_session, minnie_email, minnie_password, minnie_url, minnie_website_name, minnie_scan_id, minnie_deep, minnie_date))
+    db_session.rollback()
+
+def test_duplicate_scan():
+    db_session = Database().get_session()
+    generic_duplicate_test(db_session, 
+                lambda: add_mickey_scan(db_session))
+    db_session.rollback()
+    
+def test_add_found_vulnerability():
+    db_session = Database().get_session()
+    
+    minnie_scan_id = 2
+    minnie_url = "minniemousewebsite.com"
+    minnie_email = "minnie@mouse.com"
+    minnie_password = "12346"
+    minnie_website_name = "Minnie's Website"
+    minnie_deep = True
+    minnie_date = date.today()
+    csrf_vulnerability="Cross-Site Request Forgery"
+    csrf_date_added=date.today()
+    
+    generic_add_test(lambda: check_found_sqli(db_session), 
+                     lambda: add_found_sqli(db_session), 
+                     lambda: check_found_vulnerability(db_session, minnie_scan_id, csrf_vulnerability),
+                     lambda: add_found_vulnerability(db_session, csrf_vulnerability, csrf_date_added, 
+                                                     minnie_email, minnie_password, minnie_url, minnie_website_name, minnie_scan_id, minnie_deep, minnie_date))
+    db_session.rollback()
+
+def test_duplicate_found_vulnerability():
+    db_session = Database().get_session()
+    generic_duplicate_test(db_session, 
+                lambda: add_found_sqli(db_session))
+    db_session.rollback()
+    
+def test_add_resource_rating():
+    db_session = Database().get_session()
+    
+    minnie_email = "minnie@mouse.com"
+    minnie_password = "12346"
+    csrf_resource_url = "https://owasp.org/www-community/attacks/csrf"
+    csrf_title = "Cross Site Request Forgery (CSRF)"
+    csrf_vulnerability = "Cross-Site Request Forgery"
+    csrf_date_added = date.today()
+    csrf_rating = 4
+    generic_add_test(lambda: check_sqli_rating(db_session), 
+                     lambda: add_sqli_rating(db_session), 
+                     lambda: check_resource_rating(db_session, minnie_email, csrf_resource_url, csrf_rating),
+                     lambda: add_resource_rating(db_session, minnie_email, minnie_password, 
+                                csrf_resource_url, csrf_title, csrf_vulnerability, csrf_date_added,
+                                csrf_rating))
+    db_session.rollback()
+
+def test_duplicate_resource_rating():
+    db_session = Database().get_session()
+    generic_duplicate_test(db_session, 
+                lambda: add_sqli_rating(db_session))
+    db_session.rollback()
+    
+def test_add_expert_rating():
+    db_session = Database().get_session()
+    
+    minnie_email = "minnie@mouse.com"
+    minnie_password = "12346"
+    daisy_email = "daisy@duck.com"
+    daisy_password = "6789"
+    daisy_first_name = "Daisy"
+    daisy_last_name = "Duck"
+    daisy_rating = 4
+
+    generic_add_test(lambda: check_donald_rating(db_session), 
+                     lambda: add_donald_rating(db_session), 
+                     lambda: check_cybersecurity_expert_rating(db_session, minnie_email, daisy_email, daisy_rating),
+                     lambda: add_cybersecurity_expert_rating(db_session, minnie_email, minnie_password, 
+                                    daisy_email, daisy_password, daisy_first_name, daisy_last_name,
+                                    daisy_rating))
+    db_session.rollback()
+
+def test_duplicate_expert_rating():
+    db_session = Database().get_session()
+    generic_duplicate_test(db_session, 
+                lambda: add_donald_rating(db_session))
+    db_session.rollback()
