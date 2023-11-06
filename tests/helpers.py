@@ -3,7 +3,7 @@ from tests.constants import *
 
 def add_website_owners(db_session):
     add_mickey(db_session)
-    add_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD)
+    add_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME)
 
 def add_vulnerabilities(db_session):
     add_sqli_vulnerability(db_session)

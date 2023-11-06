@@ -5,8 +5,8 @@ def test_add_website_owner_table():
     db_session = Database().get_session()
     generic_add_test(lambda: check_mickey(db_session), 
                      lambda: add_mickey(db_session), 
-                     lambda: check_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD),
-                     lambda: add_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD))
+                     lambda: check_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME),
+                     lambda: add_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME))
     db_session.rollback()
 
 def test_duplicate_websiste_owner_table():

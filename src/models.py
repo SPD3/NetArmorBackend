@@ -17,6 +17,8 @@ class WebsiteOwner(Base):
     
     email = Column(String, primary_key=True, nullable=False, index=True)
     password = Column(String, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     websites = relationship("Website", back_populates="owner")
     scans = relationship("Scan", back_populates="owner")
     resource_ratings = relationship("ResourceRating", back_populates="owner")

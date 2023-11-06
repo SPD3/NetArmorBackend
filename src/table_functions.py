@@ -3,19 +3,21 @@ import pytest
 from datetime import date
         
 # Website Owner Functions
-def check_website_owner(db_session, email, password):
+def check_website_owner(db_session, email, password, first_name, last_name):
     website_owner = db_session.query(models.WebsiteOwner).filter(models.WebsiteOwner.email==email).first()
-    return website_owner is not None and website_owner.password == password
+    return website_owner is not None and (website_owner.password == password
+                                          and website_owner.first_name == first_name
+                                          and website_owner.last_name == last_name)
 
 def check_mickey(db_session):
-    return check_website_owner(db_session, "mickey@mouse.com", "12345")
+    return check_website_owner(db_session, "mickey@mouse.com", "12345", "Mickey", "Mouse")
     
-def add_website_owner(db_session, email, password):
-    db_website = models.WebsiteOwner(email=email, password=password)
+def add_website_owner(db_session, email, password, first_name, last_name):
+    db_website = models.WebsiteOwner(email=email, password=password, first_name=first_name, last_name=last_name)
     db_session.add(db_website)
     
 def add_mickey(db_session):
-    add_website_owner(db_session, "mickey@mouse.com", "12345")
+    add_website_owner(db_session, "mickey@mouse.com", "12345", "Mickey", "Mouse")
 
 # Website Functions
 def check_website(db_session, url, owner_email, website_name):
