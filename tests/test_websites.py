@@ -1,5 +1,8 @@
-from tests.test_main import *
-  
+from src.database import Database
+from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_URL, MINNIE_WEBSITE_NAME
+from src.website_functions import add_mickey_website, add_website, add_website_owner, add_mickey, check_mickey_website, check_website, check_website_owner, check_mickey
+from tests.test_main import generic_add_test, generic_duplicate_test
+from tests.helpers import add_website_owners, add_mickey
 
 def test_add_website_owner_table():
     db_session = Database().get_session()

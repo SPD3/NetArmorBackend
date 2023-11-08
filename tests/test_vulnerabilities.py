@@ -1,5 +1,10 @@
-from tests.test_main import *
-
+from src.database import Database
+from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_DEEP, MINNIE_DATE
+from src.vulnerability_functions import add_vulnerability, add_sqli_vulnerability, check_vulnerability, check_sqli_vulnerability, check_found_sqli, add_found_sqli, add_found_vulnerability, check_found_vulnerability
+from tests.test_main import generic_add_test, generic_duplicate_test
+from src.scan_functions import add_mickey_scan, add_scan
+from tests.helpers import add_mickey, add_websites, add_vulnerabilities
+from src.website_functions import add_mickey_website
 
 def test_add_vulnerability_table():
     db_session = Database().get_session()    

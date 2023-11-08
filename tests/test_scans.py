@@ -1,4 +1,8 @@
-from tests.test_main import *
+from src.database import Database
+from tests.constants import MINNIE_EMAIL, MINNIE_URL,  MINNIE_SCAN_ID, MINNIE_DEEP, MINNIE_DATE
+from src.scan_functions import add_mickey_scan, add_scan, check_mickey_scan, check_scan
+from tests.test_main import generic_add_test, generic_duplicate_test
+from tests.helpers import add_mickey, add_mickey_website, add_websites
 
 def test_add_scan():
     db_session = Database().get_session()

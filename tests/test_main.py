@@ -1,11 +1,5 @@
-from unittest.mock import patch
-import pytest
-from src.main import basic_endpoint, create_account, account_exists
-from src.database import Database
-from src import models, schemas
-from src.table_functions import *
-from tests.constants import *
-from tests.helpers import *
+import pytest 
+
 
 # Generic add and duplicate tests
 def generic_add_test(check_first_entry_present, add_first_entry, check_second_entry_present, add_second_entry):
