@@ -1,9 +1,10 @@
 from src.database import Database
 from tests.constants import CLOUD_CERTIFICATION_NAME, CLOUD_ISSUER, CLOUD_LAUNCH_DATE, CLOUD_CERTIFICATION_NUMBER, DAISY_EMAIL, CLOUD_DATE_ISSUED
 from tests.test_main import generic_add_test, generic_duplicate_test
-from src.certificate_functions import check_pentest_certification, add_pentest_certification, check_certification, add_certification, check_issued_pentest_certification, add_issued_pentest_certification, check_issued_certification, add_issued_certification
-from src.expert_functions import add_donald
-from tests.helpers import add_cybersecurity_experts
+from src.certificate_functions import check_certification, add_certification, check_issued_certification, add_issued_certification
+from tests.helpers.expert_helpers import add_donald
+from tests.helpers.helper import add_cybersecurity_experts
+from tests.helpers.certificate_helpers import add_pentest_certification, check_pentest_certification, add_issued_pentest_certification, check_issued_pentest_certification
 
 def test_add_certificate_table():
     db_session = Database().get_session()    

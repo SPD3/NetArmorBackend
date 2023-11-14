@@ -1,17 +1,18 @@
 from src.database import Database
-from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_RATING, MINNIE_EMAIL, CSRF_NAME
+from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_RATING, DAISY_IMAGE, MINNIE_EMAIL, CSRF_NAME
 from tests.test_main import generic_add_test, generic_duplicate_test
-from src.expert_functions import check_donald, add_donald, check_cybersecurity_expert, add_cybersecurity_expert, check_donald_rating, add_donald_rating, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_donald_specialty, add_donald_specialty, check_specialty, add_specialty
-from tests.helpers import add_cybersecurity_experts, add_website_owners, add_vulnerabilities
-from src.website_functions import add_mickey
-from src.vulnerability_functions import add_sqli_vulnerability
+from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_specialty, add_specialty
+from tests.helpers.helper import add_cybersecurity_experts, add_website_owners, add_vulnerabilities
+from tests.helpers.website_helpers import add_mickey
+from tests.helpers.vulnerability_helpers import add_sqli_vulnerability
+from tests.helpers.expert_helpers import add_donald, check_donald, add_donald_rating, check_donald_rating, add_donald_specialty, check_donald_specialty
 
 def test_add_cybersecurity_expert_table():
     db_session = Database().get_session()
     generic_add_test(lambda: check_donald(db_session), 
                      lambda: add_donald(db_session), 
-                     lambda: check_cybersecurity_expert(db_session, DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME),
-                     lambda: add_cybersecurity_expert(db_session, DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME))
+                     lambda: check_cybersecurity_expert(db_session, DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_IMAGE),
+                     lambda: add_cybersecurity_expert(db_session, DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_IMAGE))
     db_session.rollback()
 
 def test_duplicate_cybersecurity_expert_table():

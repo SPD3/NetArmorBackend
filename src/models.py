@@ -19,6 +19,7 @@ class WebsiteOwner(Base):
     password = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
+    image = Column(String, nullable=False)
     websites = relationship("Website", back_populates="owner")
     scans = relationship("Scan", back_populates="owner")
     resource_ratings = relationship("ResourceRating", back_populates="owner")
@@ -73,6 +74,7 @@ class CybersecurityExpert(Base):
     password = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
+    image = Column(String, nullable=False)
     certifications = relationship("IssuedCertification", back_populates="expert")
     specialty = relationship("Specialty", back_populates="cybersecurity_expert")
     ratings = relationship("CybersecurityExpertRating", back_populates="expert")
@@ -94,7 +96,7 @@ class Scan(Base):
     date = Column(Date, nullable=False)
     owner = relationship("WebsiteOwner", back_populates="scans")
     website = relationship("Website", back_populates="scans")
-    found_vulnerabilities = relationship("FoundVulnerability", back_populates="scans")
+    found_vulnerabilities = relationship("TestedVulnerability", back_populates="scans")
     
     
 class Vulnerability(Base):
@@ -104,9 +106,9 @@ class Vulnerability(Base):
     date_added = Column(Date, nullable=False)
     resources = relationship("Resource", back_populates="vulnerabilities")
     experts = relationship("Specialty", back_populates="vulnerabilities")
-    found_scans = relationship("FoundVulnerability", back_populates="vulnerabilities")
+    found_scans = relationship("TestedVulnerability", back_populates="vulnerabilities")
     
-class FoundVulnerability(Base):
+class TestedVulnerability(Base):
     __tablename__ = 'found_vulnerabilities'
     scan_id = Column(Integer, ForeignKey('scans.scan_id'), primary_key=True, nullable=False)
     vulnerability = Column(String, ForeignKey('vulnerabilities.name'), primary_key=True, nullable=False)
@@ -117,7 +119,7 @@ class ResourceRating(Base):
     __tablename__ = 'resouce_ratings'
     website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
     resource_url = Column(String, ForeignKey('resources.resource_url'), primary_key=True, nullable=False)
-    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=False)
+    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=True)
     resource = relationship("Resource", back_populates="ratings")
     owner = relationship("WebsiteOwner", back_populates="resource_ratings")
     
@@ -125,7 +127,7 @@ class CybersecurityExpertRating(Base):
     __tablename__ = 'cybersecurity_expert_ratings'
     website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
     cybersecurity_expert = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
-    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=False)
+    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=True)
     expert = relationship("CybersecurityExpert", back_populates="ratings")
     owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_ratings")
     
