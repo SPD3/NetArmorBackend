@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_DEEP, MINNIE_DATE
+from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_DEEP, MINNIE_DATE, SQLI_NAME, MICKEY_SCAN_ID
 from src.vulnerability_functions import add_vulnerability, check_vulnerability, add_found_vulnerability, check_found_vulnerability
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.scan_functions import add_scan
@@ -19,7 +19,9 @@ def test_add_vulnerability_table():
 
 def test_duplicate_vulnerability_table():
     db_session = Database().get_session()
-    generic_duplicate_test(db_session, lambda: add_sqli_vulnerability(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_sqli_vulnerability(db_session),
+                           lambda: add_vulnerability(db_session, SQLI_NAME, CSRF_DATE_ADDED))
     db_session.rollback()
     
 def test_add_found_vulnerability():
@@ -40,5 +42,7 @@ def test_duplicate_found_vulnerability():
     add_mickey_website(db_session)
     add_mickey_scan(db_session)
     add_sqli_vulnerability(db_session)
-    generic_duplicate_test(db_session, lambda: add_found_sqli(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_found_sqli(db_session),
+                           lambda: add_found_vulnerability(db_session, MICKEY_SCAN_ID, SQLI_NAME))
     db_session.rollback()

@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import CLOUD_CERTIFICATION_NAME, CLOUD_ISSUER, CLOUD_LAUNCH_DATE, CLOUD_CERTIFICATION_NUMBER, DAISY_EMAIL, CLOUD_DATE_ISSUED
+from tests.constants import CLOUD_CERTIFICATION_NAME, CLOUD_ISSUER, CLOUD_LAUNCH_DATE, CLOUD_CERTIFICATION_NUMBER, DAISY_EMAIL, CLOUD_DATE_ISSUED, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_CERTIFICATION_NUMBER
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.certificate_functions import check_certification, add_certification, check_issued_certification, add_issued_certification
 from tests.helpers.expert_helpers import add_donald
@@ -16,7 +16,9 @@ def test_add_certificate_table():
     
 def test_duplicate_certificate_table():
     db_session = Database().get_session()
-    generic_duplicate_test(db_session, lambda: add_pentest_certification(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_pentest_certification(db_session),
+                           lambda: add_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, CLOUD_LAUNCH_DATE))
     db_session.rollback()
     
 def test_add_issued_certification_table():
@@ -35,5 +37,6 @@ def test_duplicate_issued_certification_table():
     add_pentest_certification(db_session)
     add_donald(db_session)
     generic_duplicate_test(db_session, 
-                lambda: add_issued_pentest_certification(db_session))
+                lambda: add_issued_pentest_certification(db_session),
+                lambda: add_issued_certification(db_session, PENTEST_CERTIFICATION_NUMBER, PENTEST_CERTIFICATION_NAME, CLOUD_ISSUER, DAISY_EMAIL, CLOUD_DATE_ISSUED))
     db_session.rollback()

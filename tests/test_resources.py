@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import CSRF_RESOURCE_URL, CSRF_TITLE, CSRF_NAME, MINNIE_EMAIL, CSRF_RATING
+from tests.constants import CSRF_LINK, CSRF_TITLE, CSRF_NAME, MINNIE_EMAIL, CSRF_RATING, SQLI_LINK, MICKEY_EMAIL
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.resource_functions import check_resource, add_resource, check_resource_rating, add_resource_rating
 from tests.helpers.vulnerability_helpers import add_sqli_vulnerability
@@ -13,14 +13,16 @@ def test_add_resource_table():
     add_vulnerabilities(db_session)
     generic_add_test(lambda: check_sqli_resource(db_session), 
                      lambda: add_sqli_resource(db_session), 
-                     lambda: check_resource(db_session, CSRF_RESOURCE_URL, CSRF_TITLE, CSRF_NAME),
-                     lambda: add_resource(db_session, CSRF_RESOURCE_URL, CSRF_TITLE, CSRF_NAME))
+                     lambda: check_resource(db_session, CSRF_LINK, CSRF_TITLE, CSRF_NAME),
+                     lambda: add_resource(db_session, CSRF_LINK, CSRF_TITLE, CSRF_NAME))
     db_session.rollback()
 
 def test_duplicate_resource_table():
     db_session = Database().get_session()
     add_sqli_vulnerability(db_session)
-    generic_duplicate_test(db_session, lambda: add_sqli_resource(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_sqli_resource(db_session),
+                           lambda: add_resource(db_session, SQLI_LINK, CSRF_TITLE, CSRF_NAME))
     db_session.rollback()
 
 def test_add_resource_rating():
@@ -28,11 +30,11 @@ def test_add_resource_rating():
     add_website_owners(db_session)
     add_vulnerabilities(db_session)
     add_sqli_resource(db_session)
-    add_resource(db_session, CSRF_RESOURCE_URL, CSRF_TITLE, CSRF_NAME)
+    add_resource(db_session, CSRF_LINK, CSRF_TITLE, CSRF_NAME)
     generic_add_test(lambda: check_sqli_rating(db_session), 
                      lambda: add_sqli_rating(db_session), 
-                     lambda: check_resource_rating(db_session, MINNIE_EMAIL, CSRF_RESOURCE_URL, CSRF_RATING),
-                     lambda: add_resource_rating(db_session, MINNIE_EMAIL, CSRF_RESOURCE_URL, CSRF_RATING))
+                     lambda: check_resource_rating(db_session, MINNIE_EMAIL, CSRF_LINK, CSRF_RATING),
+                     lambda: add_resource_rating(db_session, MINNIE_EMAIL, CSRF_LINK, CSRF_RATING))
     db_session.rollback()
 
 def test_duplicate_resource_rating():
@@ -40,5 +42,7 @@ def test_duplicate_resource_rating():
     add_mickey(db_session)
     add_sqli_vulnerability(db_session)
     add_sqli_resource(db_session)
-    generic_duplicate_test(db_session, lambda: add_sqli_rating(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_sqli_rating(db_session),
+                           lambda: add_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, CSRF_RATING))
     db_session.rollback()

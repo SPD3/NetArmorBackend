@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_URL, MINNIE_WEBSITE_NAME, MINNIE_IMAGE
+from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_URL, MINNIE_WEBSITE_NAME, MINNIE_IMAGE, MICKEY_EMAIL, MICKEY_URL
 from src.website_functions import add_website, add_website_owner, check_website, check_website_owner
 from tests.test_main import generic_add_test, generic_duplicate_test
 from tests.helpers.helper import add_website_owners
@@ -15,7 +15,9 @@ def test_add_website_owner_table():
 
 def test_duplicate_websiste_owner_table():
     db_session = Database().get_session()
-    generic_duplicate_test(db_session, lambda: add_mickey(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_mickey(db_session), 
+                           lambda: add_website_owner(db_session, MICKEY_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE))
     db_session.rollback()
     
 def test_add_website_table():
@@ -30,5 +32,7 @@ def test_add_website_table():
 def test_duplicate_website_table():
     db_session = Database().get_session()
     add_mickey(db_session)
-    generic_duplicate_test(db_session, lambda: add_mickey_website(db_session))
+    generic_duplicate_test(db_session, 
+                           lambda: add_mickey_website(db_session), 
+                           lambda: add_website(db_session, MICKEY_URL, MINNIE_EMAIL, MINNIE_WEBSITE_NAME))
     db_session.rollback()
