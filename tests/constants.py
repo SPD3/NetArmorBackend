@@ -8,6 +8,8 @@ MICKEY_FIRST_NAME = "Mickey"
 MICKEY_LAST_NAME = "Mouse"
 MICKEY_IMAGE = "mickey image"
 MICKEY_SCAN_ID = 1
+MICKEY_DEEP = False
+MICKEY_SCAN_DATE= date(2023, 11, 19)
 
 
 MINNIE_EMAIL = "minnie@mouse.com"
@@ -16,7 +18,7 @@ MINNIE_URL = "minniemousewebsite.com"
 MINNIE_WEBSITE_NAME = "Minnie's Website"
 MINNIE_SCAN_ID = 2
 MINNIE_DEEP = True
-MINNIE_DATE = date.today()
+MINNIE_SCAN_DATE = date.today()
 MINNIE_FIRST_NAME = "Minnie"
 MINNIE_LAST_NAME = "Mouse"
 MINNIE_IMAGE = "minnie image"

@@ -1,14 +1,13 @@
-from src.resource_functions import check_resource, add_resource, check_resource_rating, add_resource_rating
-from tests.constants import SQLI_LINK, SQLI_TITLE, SQLI_NAME, SQLI_RATING, MICKEY_EMAIL
+from src.resource_functions import add_resource, add_resource_rating
+from src.vulnerability_functions import add_vulnerability
+from tests.constants import SQLI_TITLE, SQLI_NAME, SQLI_DATE, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE
+from src.website_functions import add_website_owner
 
-def check_sqli_resource(db_session):
-    return check_resource(db_session, SQLI_LINK, SQLI_TITLE, SQLI_NAME)
+def add_mock_resource(db_session, link, title, vulnerability, date_added=SQLI_DATE):
+    add_vulnerability(db_session, vulnerability, date_added)
+    add_resource(db_session, link, title, vulnerability)
 
-def add_sqli_resource(db_session):
-    add_resource(db_session, SQLI_LINK, SQLI_TITLE, SQLI_NAME)
-    
-def check_sqli_rating(db_session):
-    return check_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, SQLI_RATING)
-
-def add_sqli_rating(db_session):
-    add_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, SQLI_RATING)
+def add_mock_resource_rating(db_session, email, link, rating, vulnerability=SQLI_NAME, password=MICKEY_PASSWORD, first_name=MICKEY_FIRST_NAME, last_name=MICKEY_LAST_NAME, image=MICKEY_IMAGE, title=SQLI_TITLE):
+    add_website_owner(db_session, email, password, first_name, last_name, image)
+    add_mock_resource(db_session, link, title, vulnerability)
+    add_resource_rating(db_session, email, link, rating)

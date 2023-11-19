@@ -1,14 +1,8 @@
-from src.certificate_functions import check_certification, add_certification, check_issued_certification, add_issued_certification
-from tests.constants import PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_LAUNCH_DATE, PENTEST_DATE_ISSUED, DONALD_EMAIL
+from src.certificate_functions import add_certification, add_issued_certification
+from tests.constants import PENTEST_LAUNCH_DATE, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE
+from src.expert_functions import add_cybersecurity_expert
 
-def check_pentest_certification(db_session):
-    return check_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_LAUNCH_DATE)
-
-def add_pentest_certification(db_session):
-    add_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_LAUNCH_DATE)
-    
-def check_issued_pentest_certification(db_session):
-    return check_issued_certification(db_session, 12345, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, DONALD_EMAIL, PENTEST_DATE_ISSUED)
-
-def add_issued_pentest_certification(db_session):
-    add_issued_certification(db_session, 12345, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, DONALD_EMAIL, PENTEST_DATE_ISSUED)
+def add_mock_issued_certification(db_session, certification_number, certification_name, issuer, email, certification_issue_date, certification_launch_date=PENTEST_LAUNCH_DATE, password=DONALD_PASSWORD, first_name=DONALD_FIRST_NAME, last_name=DONALD_LAST_NAME, image=DONALD_IMAGE):
+    add_certification(db_session, certification_name, issuer, certification_launch_date)
+    add_cybersecurity_expert(db_session, email, password, first_name, last_name, image)
+    add_issued_certification(db_session, certification_number, certification_name, issuer, email, certification_issue_date, )
