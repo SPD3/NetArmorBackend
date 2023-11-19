@@ -16,7 +16,7 @@ def test_duplicate_websiste_owner_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_website_owner(db_session, MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE), 
-                           lambda: add_website_owner(db_session, MICKEY_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE))
+                           lambda: add_website_owner(db_session, MICKEY_EMAIL, MINNIE_PASSWORD, MICKEY_FIRST_NAME+"a", MICKEY_LAST_NAME+"a", MICKEY_IMAGE+"a"))
     db_session.rollback()
     
 def test_add_website_table():
@@ -31,5 +31,5 @@ def test_duplicate_website_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_mock_website(db_session, MICKEY_URL, MICKEY_EMAIL, MICKEY_WEBSITE_NAME), 
-                           lambda: add_website(db_session, MICKEY_URL, MINNIE_EMAIL, MINNIE_WEBSITE_NAME))
+                           lambda: add_website(db_session, MICKEY_URL, MICKEY_EMAIL+"a", MICKEY_WEBSITE_NAME+"a"))
     db_session.rollback()

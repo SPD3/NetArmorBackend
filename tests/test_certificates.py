@@ -3,6 +3,7 @@ from tests.constants import CLOUD_CERTIFICATION_NAME, CLOUD_ISSUER, CLOUD_LAUNCH
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.certificate_functions import check_certification, add_certification, check_issued_certification, add_issued_certification
 from tests.helpers.certificate_helpers import add_mock_issued_certification
+from datetime import timedelta
 
 def test_add_certificate_table():
     db_session = Database().get_session()    
@@ -16,7 +17,7 @@ def test_duplicate_certificate_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_LAUNCH_DATE),
-                           lambda: add_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, CLOUD_LAUNCH_DATE))
+                           lambda: add_certification(db_session, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, PENTEST_LAUNCH_DATE - timedelta(days=1)))
     db_session.rollback()
     
 def test_add_issued_certification_table():
@@ -31,5 +32,5 @@ def test_duplicate_issued_certification_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                 lambda: add_mock_issued_certification(db_session, PENTEST_CERTIFICATION_NUMBER, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, DONALD_EMAIL, PENTEST_DATE_ISSUED), 
-                lambda: add_issued_certification(db_session, PENTEST_CERTIFICATION_NUMBER, PENTEST_CERTIFICATION_NAME, CLOUD_ISSUER, DAISY_EMAIL, CLOUD_DATE_ISSUED))
+                lambda: add_issued_certification(db_session, PENTEST_CERTIFICATION_NUMBER, PENTEST_CERTIFICATION_NAME, PENTEST_ISSUER, DONALD_EMAIL+"a", PENTEST_DATE_ISSUED-timedelta(days=1)))
     db_session.rollback()

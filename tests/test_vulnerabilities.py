@@ -3,6 +3,7 @@ from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_E
 from src.vulnerability_functions import add_vulnerability, check_vulnerability, add_found_vulnerability, check_found_vulnerability
 from tests.test_main import generic_add_test, generic_duplicate_test
 from tests.helpers.vulnerability_helpers import add_mock_found_vulnerability
+from datetime import timedelta
 
 
 def test_add_vulnerability_table():
@@ -17,7 +18,7 @@ def test_duplicate_vulnerability_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DATE),
-                           lambda: add_vulnerability(db_session, SQLI_NAME, CSRF_DATE_ADDED))
+                           lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DATE-timedelta(days=1)))
     db_session.rollback()
     
 def test_add_found_vulnerability():

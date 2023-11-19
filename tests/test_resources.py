@@ -17,7 +17,7 @@ def test_duplicate_resource_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_mock_resource(db_session, SQLI_LINK, SQLI_TITLE, SQLI_NAME),
-                           lambda: add_resource(db_session, SQLI_LINK, CSRF_TITLE, CSRF_NAME))
+                           lambda: add_resource(db_session, SQLI_LINK, SQLI_TITLE+"a", SQLI_NAME+"a"))
     db_session.rollback()
 
 def test_add_resource_rating():
@@ -32,5 +32,5 @@ def test_duplicate_resource_rating():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_mock_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, SQLI_RATING, SQLI_NAME),
-                           lambda: add_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, CSRF_RATING))
+                           lambda: add_resource_rating(db_session, MICKEY_EMAIL, SQLI_LINK, SQLI_RATING-1))
     db_session.rollback()

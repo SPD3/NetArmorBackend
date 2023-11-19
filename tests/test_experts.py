@@ -17,7 +17,7 @@ def test_duplicate_cybersecurity_expert_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                 lambda: add_cybersecurity_expert(db_session, DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE),
-                lambda: add_cybersecurity_expert(db_session, DONALD_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_IMAGE))
+                lambda: add_cybersecurity_expert(db_session, DONALD_EMAIL, DONALD_PASSWORD+"a", DONALD_FIRST_NAME+"a", DONALD_LAST_NAME+"a", DONALD_IMAGE+"a"))
     db_session.rollback()
     
 def test_add_expert_rating():
@@ -32,7 +32,7 @@ def test_duplicate_expert_rating():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
                            lambda: add_mock_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING),
-                           lambda: add_cybersecurity_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DAISY_RATING))
+                           lambda: add_cybersecurity_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING-1))
     db_session.rollback()
     
 def test_add_specialty_table():
