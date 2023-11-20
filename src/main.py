@@ -51,10 +51,10 @@ def main():
     register_endpoints(app)
     
     def init_model(engine):
-        db.get_session().configure(bind=engine)
+        db.get_session(False).configure(bind=engine)
 
     model_bunch = Bunch(
-        DBSession=db.get_session(),
+        DBSession=db.get_session(False),
         init_model=init_model
     )
     app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), db.get_url(), model_bunch)
