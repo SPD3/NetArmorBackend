@@ -43,6 +43,7 @@ CLOUD_IMAGE = "cloud image"
 SQLI_LINK = "https://owasp.org/www-community/attacks/SQL_Injection"
 SQLI_TITLE = "SQL Injection"
 SQLI_NAME = "SQL Injection"
+SQLI_DESCRIPTION = "SQL Injection is a code injection technique that might destroy your database."
 SQLI_DATE = date.today()
 SQLI_RATING = 5
 
@@ -52,6 +53,7 @@ CSRF_DATE_ADDED = date.today()
 CSRF_LINK = "https://owasp.org/www-community/attacks/csrf"
 CSRF_TITLE = "Cross Site Request Forgery (CSRF)"
 CSRF_RATING = 4
+CSRF_DESCRIPTION = "Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they're currently authenticated."
 
 DONALD_EMAIL = "donald@duck.com"
 DONALD_PASSWORD = "12345"

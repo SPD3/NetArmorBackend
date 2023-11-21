@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, SQLI_NAME, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, SQLI_DATE
+from tests.constants import CSRF_NAME, CSRF_DATE_ADDED, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, SQLI_NAME, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, SQLI_DATE, SQLI_DESCRIPTION, CSRF_DESCRIPTION
 from src.vulnerability_functions import add_vulnerability, check_vulnerability, add_tested_vulnerability, check_tested_vulnerability
 from tests.test_main import generic_add_test, generic_duplicate_test
 from tests.helpers.vulnerability_helpers import add_mock_tested_vulnerability
@@ -8,17 +8,17 @@ from datetime import timedelta
 
 def test_add_vulnerability_table():
     db_session = Database().get_session()    
-    generic_add_test(lambda: check_vulnerability(db_session,SQLI_NAME, SQLI_DATE),
-                     lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DATE), 
-                     lambda: check_vulnerability(db_session, CSRF_NAME, CSRF_DATE_ADDED),
-                     lambda: add_vulnerability(db_session, CSRF_NAME, CSRF_DATE_ADDED))
+    generic_add_test(lambda: check_vulnerability(db_session,SQLI_NAME, SQLI_DESCRIPTION, SQLI_DATE),
+                     lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DESCRIPTION, SQLI_DATE), 
+                     lambda: check_vulnerability(db_session, CSRF_NAME, CSRF_DESCRIPTION, CSRF_DATE_ADDED),
+                     lambda: add_vulnerability(db_session, CSRF_NAME, CSRF_DESCRIPTION, CSRF_DATE_ADDED))
     db_session.rollback()
 
 def test_duplicate_vulnerability_table():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
-                           lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DATE),
-                           lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DATE-timedelta(days=1)))
+                           lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DESCRIPTION, SQLI_DATE),
+                           lambda: add_vulnerability(db_session, SQLI_NAME, SQLI_DESCRIPTION+"a", SQLI_DATE-timedelta(days=1)))
     db_session.rollback()
     
 def test_add_tested_vulnerability():

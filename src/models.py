@@ -87,6 +87,7 @@ class Vulnerability(Base):
     __tablename__ = 'vulnerabilities'
     
     name = Column(String, primary_key=True, nullable=False, index=True)
+    description = Column(String, nullable=True)
     date_added = Column(Date, nullable=False)
     resources = relationship("Resource", back_populates="vulnerabilities")
     experts = relationship("Specialty", back_populates="vulnerabilities")
