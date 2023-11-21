@@ -75,11 +75,12 @@ class Scan(Base):
     scan_id = Column(Integer, primary_key=True, nullable=False, index=True)
     website_owner = Column(String, ForeignKey('website_owners.email'), nullable=False)
     website_url = Column(String, ForeignKey('websites.url'), nullable=False)
+    score = Column(Integer, CheckConstraint('score >= 0 AND score <= 100'), nullable=True)
     deep = Column(Boolean, nullable=False)
     date = Column(Date, nullable=False)
     owner = relationship("WebsiteOwner", back_populates="scans")
     website = relationship("Website", back_populates="scans")
-    found_vulnerabilities = relationship("TestedVulnerability", back_populates="scans")
+    tested_vulnerabilities = relationship("TestedVulnerability", back_populates="scans")
     
     
 class Vulnerability(Base):
@@ -89,14 +90,14 @@ class Vulnerability(Base):
     date_added = Column(Date, nullable=False)
     resources = relationship("Resource", back_populates="vulnerabilities")
     experts = relationship("Specialty", back_populates="vulnerabilities")
-    found_scans = relationship("TestedVulnerability", back_populates="vulnerabilities")
+    tested_scans = relationship("TestedVulnerability", back_populates="vulnerabilities")
     
 class TestedVulnerability(Base):
-    __tablename__ = 'found_vulnerabilities'
+    __tablename__ = 'tested_vulnerabilities'
     scan_id = Column(Integer, ForeignKey('scans.scan_id'), primary_key=True, nullable=False)
     vulnerability = Column(String, ForeignKey('vulnerabilities.name'), primary_key=True, nullable=False)
-    vulnerabilities = relationship("Vulnerability", back_populates="found_scans")
-    scans = relationship("Scan", back_populates="found_vulnerabilities")
+    vulnerabilities = relationship("Vulnerability", back_populates="tested_scans")
+    scans = relationship("Scan", back_populates="tested_vulnerabilities")
     
 class ResourceRating(Base):
     __tablename__ = 'resouce_ratings'
