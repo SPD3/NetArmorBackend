@@ -28,12 +28,15 @@ PENTEST_ISSUER = "CompTIA"
 PENTEST_CERTIFICATION_NUMBER = 12345
 PENTEST_LAUNCH_DATE = date(2020, 10, 28)
 PENTEST_DATE_ISSUED = date.today()
+PENTEST_IMAGE = "pentest image"
 
 CLOUD_CERTIFICATION_NAME = "Cloud+"
 CLOUD_ISSUER = "CompTIA+"
 CLOUD_CERTIFICATION_NUMBER = 6789
 CLOUD_LAUNCH_DATE = date(2021, 6, 9)
 CLOUD_DATE_ISSUED = date.today()
+CLOUD_IMAGE = "cloud image"
+
 
 SQLI_LINK = "https://owasp.org/www-community/attacks/SQL_Injection"
 SQLI_TITLE = "SQL Injection"

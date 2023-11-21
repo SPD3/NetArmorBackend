@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, ForeignKeyConstraint, CheckConstraint
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -44,28 +44,11 @@ class Resource(Base):
     ratings = relationship("ResourceRating", back_populates="resource")
 
 
-class Certification(Base):
-    __tablename__ = 'certifications'
-    
-    name = Column(String, primary_key=True, nullable=False, index=True) 
-    issuer = Column(String, primary_key=True, nullable=False)
-    launch_date = Column(Date, nullable=False)
-    certifications_issued = relationship("IssuedCertification", back_populates="certificate")
-
-
 class IssuedCertification(Base):
     __tablename__ = 'issued_certifications'
-    
-    certification_number = Column(Integer, primary_key=True, nullable=False, index=True)
-    certification_name = Column(String, primary_key=True, nullable=False)
-    issuer = Column(String, primary_key=True, nullable=False)
-    recipient = Column(String, ForeignKey('cybersecurity_experts.email'), nullable=False)
-    date_issued = Column(Date, nullable=False)
-    __table_args__ = (ForeignKeyConstraint([certification_name, issuer],
-                                           [Certification.name, Certification.issuer]),
-                      {})
+    image = Column(String, primary_key=True, nullable=False)
+    recipient = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
     expert = relationship("CybersecurityExpert", back_populates="certifications")
-    certificate = relationship("Certification", back_populates="certifications_issued")
 
 class CybersecurityExpert(Base):
     __tablename__ = 'cybersecurity_experts'
