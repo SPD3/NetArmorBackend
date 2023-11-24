@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 MICKEY_EMAIL = "mickey@mouse.com"
 MICKEY_URL = "mickeymousewebsite.com"
@@ -11,6 +11,9 @@ MICKEY_SCAN_ID = 1
 MICKEY_SCAN_SCORE = 100
 MICKEY_DEEP = False
 MICKEY_SCAN_DATE= date(2023, 11, 19)
+MICKEY_PAYLOAD = "mickey payload"
+MICKEY_STATUS = False
+MICKEY_SENT_TIME = datetime(2023, 11, 19, 12, 0, 0)
 
 
 MINNIE_EMAIL = "minnie@mouse.com"
@@ -24,6 +27,9 @@ MINNIE_SCAN_DATE = date.today()
 MINNIE_FIRST_NAME = "Minnie"
 MINNIE_LAST_NAME = "Mouse"
 MINNIE_IMAGE = "minnie image"
+MINNIE_PAYLOAD = "minnie payload"
+MINNIE_STATUS = True
+MINNIE_SENT_TIME = datetime.today()
 
 PENTEST_CERTIFICATION_NAME = "PenTest+"
 PENTEST_ISSUER = "CompTIA"

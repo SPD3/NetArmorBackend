@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, CheckConstraint
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -24,6 +24,8 @@ class WebsiteOwner(Base):
     scans = relationship("Scan", back_populates="owner")
     resource_ratings = relationship("ResourceRating", back_populates="owner")
     cybersecurity_expert_ratings = relationship("CybersecurityExpertRating", back_populates="owner")
+    cybersecurity_expert_messages = relationship("Message", back_populates="owner")
+
     
 class Website(Base):
     __tablename__ = 'websites'
@@ -61,6 +63,7 @@ class CybersecurityExpert(Base):
     certifications = relationship("IssuedCertification", back_populates="expert")
     specialty = relationship("Specialty", back_populates="cybersecurity_expert")
     ratings = relationship("CybersecurityExpertRating", back_populates="expert")
+    messages = relationship("Message", back_populates="expert")
 
     
 class Specialty(Base):
@@ -115,4 +118,14 @@ class CybersecurityExpertRating(Base):
     rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=True)
     expert = relationship("CybersecurityExpert", back_populates="ratings")
     owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_ratings")
+    
+class Message(Base):
+    __tablename__ = 'messages'
+    website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
+    cybersecurity_expert = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
+    payload = Column(String, nullable=False)
+    status = Column(Boolean, nullable=False)
+    time_sent = Column(DateTime, nullable=False)
+    expert = relationship("CybersecurityExpert", back_populates="messages")
+    owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_messages")
     
