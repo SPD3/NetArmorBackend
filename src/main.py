@@ -1,49 +1,48 @@
-from . import crud 
+from . import crud, website_functions
 from .database import Database
 from src.config import settings
 from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 
-def get_users(skip: int = 0, limit: int = 100):
-    db_session = Database().get_session()
-    users = crud.get_users(db_session, skip=skip, limit=limit)
-    ret = []
-    for i, user in enumerate(users):
-        ret.append({"id" : i, "email" : user.email})
-    return ret
 
-def check_credential(email, password):
+def check_website_owner_credentials(email, password):
     db_session = Database().get_session()
-    db_user = crud.get_user_by_email(db_session, email=email)
+    db_user = crud.get_website_owner_by_email(db_session, email=email)
     if db_user is None:
         return False
     return db_user.password == password
 
-
-def account_exists(email, password):
+def website_owner_exists(email):
     db_session = Database().get_session()
-    db_user = crud.get_user_by_email(db_session, email=email)
+    db_user = crud.get_website_owner_by_email(db_session, email=email)
     return db_user is not None
 
-def create_account(email, password):
+def create_website_owner(email, password, first_name, last_name, image):
     db_session = Database().get_session()
-    db_user = crud.get_user_by_email(db_session, email=email)
+    db_user = crud.get_website_owner_by_email(db_session, email)
     #TODO: Look into better error handling so that the react side can see this...
     if db_user:
         return False
-    crud.create_user(db=db_session, email=email, password=password)
+    website_functions.add_website_owner(db_session, email, password, first_name, last_name, image)
+    db_session.commit()
     return True
 
-def basic_endpoint():
-    return "Hello World"
+def delete_website_owner(email):
+    db_session = Database().get_session()
+    db_user = crud.get_website_owner_by_email(db_session, email)
+    if not db_user:
+        return False
+    db_session.delete(db_user)
+    db_session.commit()
+    return True
+
 
 def register_endpoints(app:App):
-    app.register_endpoint("users", get_users, Endpoint.GET)
-    app.register_endpoint("CheckCredentials", check_credential, Endpoint.GET)
-    app.register_endpoint("AccountExists", account_exists, Endpoint.GET)
-    app.register_endpoint("CreateAccount", create_account, Endpoint.POST)
-    app.register_endpoint("basic_endpoint", basic_endpoint, Endpoint.GET)
+    app.register_endpoint("check_website_owner_credentials", check_website_owner_credentials, Endpoint.GET)
+    app.register_endpoint("website_owner_exists", website_owner_exists, Endpoint.GET)
+    app.register_endpoint("create_website_owner", create_website_owner, Endpoint.POST)
+    app.register_endpoint("delete_website_owner", delete_website_owner, Endpoint.POST)
 
 def main():
     db = Database()
