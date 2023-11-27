@@ -7,15 +7,15 @@ from datetime import timedelta
 
 def test_add_scan():
     db_session = Database().get_session()
-    generic_add_test(lambda: check_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_SCAN_SCORE, MICKEY_DEEP, MICKEY_SCAN_DATE), 
-                     lambda: add_mock_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_SCAN_SCORE, MICKEY_DEEP, MICKEY_SCAN_DATE), 
-                     lambda: check_scan(db_session, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_SCAN_SCORE, MINNIE_DEEP, MINNIE_SCAN_DATE),
-                     lambda: add_mock_scan(db_session, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_SCAN_SCORE, MINNIE_DEEP, MINNIE_SCAN_DATE))
+    generic_add_test(lambda: check_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_DEEP, MICKEY_SCAN_DATE), 
+                     lambda: add_mock_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_DEEP, MICKEY_SCAN_DATE), 
+                     lambda: check_scan(db_session, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL, MINNIE_DEEP, MINNIE_SCAN_DATE),
+                     lambda: add_mock_scan(db_session, MINNIE_SCAN_ID, MINNIE_EMAIL, MINNIE_URL,  MINNIE_DEEP, MINNIE_SCAN_DATE))
     db_session.rollback()
 
 def test_duplicate_scan():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
-                           lambda: add_mock_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_SCAN_SCORE, MICKEY_DEEP, MICKEY_SCAN_DATE),
-                           lambda: add_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL+"a", MICKEY_URL+"a", MICKEY_SCAN_SCORE-20, not MICKEY_DEEP, MICKEY_SCAN_DATE-timedelta(days=1)))
+                           lambda: add_mock_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_DEEP, MICKEY_SCAN_DATE),
+                           lambda: add_scan(db_session, MICKEY_SCAN_ID, MICKEY_EMAIL+"a", MICKEY_URL+"a", not MICKEY_DEEP, MICKEY_SCAN_DATE-timedelta(days=1)))
     db_session.rollback()

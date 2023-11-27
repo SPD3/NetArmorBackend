@@ -28,3 +28,15 @@ def add_website(db_session, url, owner_email, website_name):
     db_website = models.Website(url=url, owner_email=owner_email, website_name=website_name)
     db_session.add(db_website)
     
+    
+# Cookie Functions
+def check_cookie(db_session, cookie_value, email):
+    cookies = db_session.query(models.Cookie).filter(models.Cookie.cookie_value==cookie_value).all()
+    if len(cookies) != 1:
+        return False
+    cookie = cookies[0]
+    return cookie is not None and cookie.email == email
+
+def add_cookie(db_session, cookie_value, email):
+    db_cookie = models.Cookie(cookie_value=cookie_value, email=email)
+    db_session.add(db_cookie)
