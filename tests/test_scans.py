@@ -1,5 +1,5 @@
 from src.database import Database
-from tests.constants import MINNIE_EMAIL, MINNIE_URL, MINNIE_SCAN_ID, MINNIE_DEEP, MINNIE_SCAN_DATE, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_DEEP, MICKEY_SCAN_DATE, MICKEY_SCAN_SCORE, MINNIE_SCAN_SCORE
+from tests.constants import MINNIE_EMAIL, MINNIE_URL, MINNIE_SCAN_ID, MINNIE_DEEP, MINNIE_SCAN_DATE, MICKEY_SCAN_ID, MICKEY_EMAIL, MICKEY_URL, MICKEY_DEEP, MICKEY_SCAN_DATE
 from src.scan_functions import add_scan,  check_scan
 from tests.test_main import generic_add_test, generic_duplicate_test
 from tests.helpers.scan_helpers import add_mock_scan
