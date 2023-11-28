@@ -18,6 +18,7 @@ class WebsiteOwner(Base):
     resource_ratings = relationship("ResourceRating", back_populates="owner")
     cybersecurity_expert_ratings = relationship("CybersecurityExpertRating", back_populates="owner")
     cybersecurity_expert_messages = relationship("Message", back_populates="owner")
+    cookie = relationship("Cookie", back_populates="owner", uselist=False)
 
     
 class Website(Base):
@@ -71,7 +72,6 @@ class Scan(Base):
     scan_id = Column(Integer, primary_key=True, nullable=False, index=True)
     website_owner = Column(String, ForeignKey('website_owners.email'), nullable=False)
     website_url = Column(String, ForeignKey('websites.url'), nullable=False)
-    score = Column(Integer, CheckConstraint('score >= 0 AND score <= 100'), nullable=True)
     deep = Column(Boolean, nullable=False)
     date = Column(Date, nullable=False)
     owner = relationship("WebsiteOwner", back_populates="scans")
@@ -83,7 +83,6 @@ class Vulnerability(Base):
     __tablename__ = 'vulnerabilities'
     
     name = Column(String, primary_key=True, nullable=False, index=True)
-    description = Column(String, nullable=True)
     date_added = Column(Date, nullable=False)
     resources = relationship("Resource", back_populates="vulnerabilities")
     experts = relationship("Specialty", back_populates="vulnerabilities")
@@ -93,6 +92,9 @@ class TestedVulnerability(Base):
     __tablename__ = 'tested_vulnerabilities'
     scan_id = Column(Integer, ForeignKey('scans.scan_id'), primary_key=True, nullable=False)
     vulnerability = Column(String, ForeignKey('vulnerabilities.name'), primary_key=True, nullable=False)
+    score = Column(Integer, CheckConstraint('score >= 0 AND score <= 100'), nullable=True)
+    success = Column(Boolean, nullable=False)
+    description = Column(String, nullable=True)
     vulnerabilities = relationship("Vulnerability", back_populates="tested_scans")
     scans = relationship("Scan", back_populates="tested_vulnerabilities")
     
@@ -121,4 +123,11 @@ class Message(Base):
     time_sent = Column(DateTime, nullable=False)
     expert = relationship("CybersecurityExpert", back_populates="messages")
     owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_messages")
+
+    
+class Cookie(Base):
+    __tablename__ = 'cookies'
+    cookie_value = Column(String, primary_key=True, nullable=False)
+    email = Column(String, ForeignKey("website_owners.email"), nullable=False)
+    owner = relationship("WebsiteOwner", back_populates="cookie")
     
