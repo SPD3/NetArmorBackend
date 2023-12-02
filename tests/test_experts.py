@@ -7,6 +7,8 @@ from tests.helpers.expert_helpers import add_mock_expert_rating, add_mock_specia
 from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
 from src.populate_tables import populate_vulnerabilities
 from datetime import date
+from src import models
+
 
 def test_add_cybersecurity_expert_table():
     db_session = Database().get_session()
@@ -59,8 +61,6 @@ def test_create_expert_account():
                     lambda: create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME), 
                     lambda: check_cybersecurity_expert(db_session, DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, TEST_IMAGE),
                     lambda: create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME))
-    delete_expert(DONALD_EMAIL)
-    delete_expert(DAISY_EMAIL)
     db_session.rollback()
     
 def test_expert_exists():
@@ -68,27 +68,26 @@ def test_expert_exists():
                     lambda: create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME), 
                     lambda: expert_exists(DAISY_EMAIL),
                     lambda: create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME))
-    delete_expert(DONALD_EMAIL)
-    delete_expert(DAISY_EMAIL)
     
 def test_check_expert_info():
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
     assert (check_expert_info(DONALD_EMAIL, DONALD_PASSWORD) == True 
             and check_expert_info(DONALD_EMAIL, DAISY_PASSWORD) == False)
-    delete_expert(DONALD_EMAIL)
     
 def test_delete_expert():
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
     assert (expert_exists(DONALD_EMAIL) == True)
     assert (delete_expert(DONALD_EMAIL) == True)
     assert (expert_exists(DONALD_EMAIL) == False)
-    delete_expert(DONALD_EMAIL)
 
 def test_add_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
     add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
-    # assert (check_specialty(db_session, DONALD_EMAIL, "SQL Injection") == True)
-    # assert (check_specialty(db_session, DONALD_EMAIL, "Cross-Site Scripting") == True)
-    # assert (check_specialty(db_session, DONALD_EMAIL, "NMAP") == False)
-    # assert (check_specialty(db_session, DONALD_EMAIL, "JWT Cookie Hijacking") == False)
+    db = Database().get_session()
+    query = db.query(models.Specialty).filter(models.Specialty.expert == DONALD_EMAIL).all()
+    assert (len(query) == 2)
+    vulnerability_set = set()
+    for vulnerability in query:
+        vulnerability_set.add(vulnerability.vulnerability)
+    assert ("SQL Injection" in vulnerability_set and "Cross-Site Scripting" in vulnerability_set)
