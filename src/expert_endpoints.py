@@ -1,0 +1,36 @@
+from . import crud, expert_functions
+from .database import Database
+from src.config import settings
+from tg.util import Bunch
+
+from src.netarmor_api import App, Endpoint
+
+def check_expert_info(email, password):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=email)
+    if db_user is None:
+        return False
+    return db_user.password == password
+
+def expert_exists(email):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=email)
+    return db_user is not None
+
+def create_expert_account(email, password, first_name, last_name, image):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email)
+    if db_user:
+        return False
+    expert_functions.add_cybersecurity_expert(db_session, email, password, first_name, last_name, image)
+    db_session.commit()
+    return True
+
+def delete_expert(email):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email)
+    if not db_user:
+        return False
+    db_session.delete(db_user)
+    db_session.commit()
+    return True
