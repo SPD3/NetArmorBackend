@@ -4,7 +4,9 @@ from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_specialty, add_specialty
 from tests.helpers.expert_helpers import add_mock_expert_rating, add_mock_specialty
-from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
+from src.populate_tables import populate_vulnerabilities
+from datetime import date
 
 def test_add_cybersecurity_expert_table():
     db_session = Database().get_session()
@@ -81,3 +83,12 @@ def test_delete_expert():
     assert (delete_expert(DONALD_EMAIL) == True)
     assert (expert_exists(DONALD_EMAIL) == False)
     delete_expert(DONALD_EMAIL)
+
+def test_add_expert_info():
+    populate_vulnerabilities()
+    create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
+    # assert (check_specialty(db_session, DONALD_EMAIL, "SQL Injection") == True)
+    # assert (check_specialty(db_session, DONALD_EMAIL, "Cross-Site Scripting") == True)
+    # assert (check_specialty(db_session, DONALD_EMAIL, "NMAP") == False)
+    # assert (check_specialty(db_session, DONALD_EMAIL, "JWT Cookie Hijacking") == False)

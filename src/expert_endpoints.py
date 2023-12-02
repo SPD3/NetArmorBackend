@@ -5,6 +5,7 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 from src.expert_functions import add_specialty
+from src.vulnerability_functions import add_vulnerability
 
 def check_expert_info(email, password):
     db_session = Database().get_session()
@@ -50,4 +51,5 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
         add_specialty(db_session, email, "NMAP")
     if jwt:
         add_specialty(db_session, email, "JWT Cookie Hijacking")
+    db_session.commit()
     return True
