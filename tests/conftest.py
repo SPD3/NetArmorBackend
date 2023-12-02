@@ -2,7 +2,8 @@ import pytest
 import docker
 from docker import APIClient
 from docker.errors import NotFound
-
+from src.database import Database
+from src.models import Base
 from src.config import get_settings
 
 def set_up_empty_test_db():
@@ -50,9 +51,18 @@ def set_up_empty_test_db():
         testdb = client.containers.get("TestDB")
     return testdb
 
+def delete_all_tables_contents():
+    session = Database().get_session()
+    meta = Base.metadata
+    for table in reversed(meta.sorted_tables):
+        print('Clear table %s' % table)
+        session.execute(table.delete())
+    session.commit()
+
 @pytest.fixture(scope="session", autouse=True)
 def mock_database():
     testdb = set_up_empty_test_db()
+    delete_all_tables_contents()
     yield
     testdb.stop()
     testdb.remove()
