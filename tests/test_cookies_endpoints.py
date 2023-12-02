@@ -1,18 +1,23 @@
 import datetime
 from unittest import mock
 import pytest
-from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_URL, MINNIE_WEBSITE_NAME, MINNIE_IMAGE, MICKEY_EMAIL, MICKEY_URL, MICKEY_WEBSITE_NAME, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MINNIE_IMAGE, MICKEY_COOKIE, MINNIE_COOKIE
+from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, MINNIE_IMAGE
 from src.main import create_website_owner
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
 from src.database import Database
 from src import models
 
+def create_website_owner_and_cookie(email:str):
+    # only care about the email here. Set the password, first name, last name, and image to known valid values
+    create_website_owner(email, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
+    cookie = create_cookie(email, True)
+    return cookie
+
 @mock.patch('src.website_functions.datetime', side_effect=lambda *args, **kw: datetime.date(*args, **kw))
 def test_create_cookie(mock_date):
     mock_now = datetime.datetime(year=2023, month=1, day=10, hour=10, minute=0, second=0)
     mock_date.datetime.now.return_value = mock_now
-    create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
-    cookie = create_cookie(MINNIE_EMAIL, True)
+    cookie = create_website_owner_and_cookie(MINNIE_EMAIL)
     session = Database().get_session()
     def check_cookie(cookie, is_website_owner):
         cookie_entry = session.query(models.Cookie).filter(models.Cookie.cookie_value==cookie).all()
@@ -33,8 +38,7 @@ def test_create_cookie(mock_date):
 def test_validate_cookie(mock_date):
     mock_now = datetime.datetime(year=2023, month=1, day=10, hour=10, minute=0, second=0)
     mock_date.datetime.now.return_value = mock_now
-    create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
-    cookie = create_cookie(MINNIE_EMAIL, True)
+    cookie = create_website_owner_and_cookie(MINNIE_EMAIL)
 
     assert validate_cookie(cookie, True) == MINNIE_EMAIL
     assert validate_cookie(cookie, False) is None
@@ -45,8 +49,7 @@ def test_validate_cookie(mock_date):
     assert validate_cookie(cookie, True) is None 
 
 def test_delete_cookie():
-    create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
-    cookie = create_cookie(MINNIE_EMAIL, True)
+    cookie = create_website_owner_and_cookie(MINNIE_EMAIL)
     delete_cookie(cookie + "a")
     delete_cookie(cookie)
     session = Database().get_session()

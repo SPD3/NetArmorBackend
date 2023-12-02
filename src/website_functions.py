@@ -40,9 +40,9 @@ def check_cookie_exists_for_email(db_session, cookie_value, email):
     cookie = cookies[0]
     return cookie is not None and cookie.email == email
 
-def cookie_entry_exists(db_session, is_website_owner:bool, email):
+def cookie_entry_exists(db_session, is_website_owner:bool, email:str):
     cookies = db_session.query(models.Cookie).filter(models.Cookie.is_website_owner==is_website_owner).filter(models.Cookie.email==email).all()
-    return len(cookies) >= 1
+    return len(cookies) == 1
 
 def update_cookie_entry(db_session, cookie_value:str, is_website_owner:bool, email:str):
     cookie = db_session.query(models.Cookie).filter(models.Cookie.is_website_owner==is_website_owner).filter(models.Cookie.email==email).all()
