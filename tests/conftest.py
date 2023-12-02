@@ -5,6 +5,7 @@ from docker.errors import NotFound
 from src.database import Database
 from src.models import Base
 from src.config import get_settings
+import contextlib
 
 def set_up_empty_test_db():
     settings = get_settings()
@@ -51,18 +52,21 @@ def set_up_empty_test_db():
         testdb = client.containers.get("TestDB")
     return testdb
 
+
+@pytest.fixture(scope="function", autouse=True)
 def delete_all_tables_contents():
-    session = Database().get_session()
     meta = Base.metadata
-    for table in reversed(meta.sorted_tables):
-        print('Clear table %s' % table)
-        session.execute(table.delete())
-    session.commit()
+    with contextlib.closing(Database().get_engine().connect()) as con:
+        trans = con.begin()
+        tables = meta.sorted_tables
+        for table in reversed(tables):
+            con.execute(table.delete())
+        trans.commit()
+
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_database():
     testdb = set_up_empty_test_db()
-    delete_all_tables_contents()
     yield
     testdb.stop()
     testdb.remove()
