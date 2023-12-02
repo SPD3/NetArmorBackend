@@ -1,8 +1,8 @@
 from src.database import Database
 from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_URL, MINNIE_WEBSITE_NAME, MINNIE_IMAGE, MICKEY_EMAIL, MICKEY_URL, MICKEY_WEBSITE_NAME, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MINNIE_IMAGE, MICKEY_COOKIE, MINNIE_COOKIE
-from src.website_functions import add_website, add_website_owner, check_website, check_website_owner, check_cookie, add_cookie
+from src.website_functions import add_website, add_website_owner, check_website, check_website_owner, check_cookie_exists_for_email, add_cookie
 from tests.test_main import generic_add_test, generic_duplicate_test
-from tests.helpers.website_helpers import add_mock_website, add_mock_cookie
+from tests.helpers.website_helpers import add_mock_website, add_mock_website_owner_cookie
 from src.main import check_website_owner_credentials, create_website_owner, website_owner_exists, delete_website_owner
 
 def test_add_website_owner_table():
@@ -37,17 +37,17 @@ def test_duplicate_website_table():
 
 def test_add_cookie():
     db_session = Database().get_session()
-    generic_add_test(lambda: check_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL),
-                     lambda: add_mock_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL), 
-                     lambda: check_cookie(db_session, MINNIE_COOKIE, MINNIE_EMAIL),
-                     lambda: add_mock_cookie(db_session, MINNIE_COOKIE, MINNIE_EMAIL))
+    generic_add_test(lambda: check_cookie_exists_for_email(db_session, MICKEY_COOKIE, MICKEY_EMAIL),
+                     lambda: add_mock_website_owner_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL), 
+                     lambda: check_cookie_exists_for_email(db_session, MINNIE_COOKIE, MINNIE_EMAIL),
+                     lambda: add_mock_website_owner_cookie(db_session, MINNIE_COOKIE, MINNIE_EMAIL))
     db_session.rollback()
 
 def test_duplicate_cookie():
     db_session = Database().get_session()
     generic_duplicate_test(db_session, 
-                           lambda: add_mock_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL), 
-                           lambda: add_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL))
+                           lambda: add_mock_website_owner_cookie(db_session, MICKEY_COOKIE, MICKEY_EMAIL), 
+                           lambda: add_cookie(db_session, MICKEY_COOKIE, True, MICKEY_EMAIL))
     db_session.rollback()
     
 def test_create_website_owner():

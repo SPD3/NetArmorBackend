@@ -4,6 +4,7 @@ from src.config import settings
 from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
+from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
 
 
 def check_website_owner_credentials(email, password):
@@ -43,6 +44,10 @@ def register_endpoints(app:App):
     app.register_endpoint("website_owner_exists", website_owner_exists, Endpoint.GET)
     app.register_endpoint("create_website_owner", create_website_owner, Endpoint.POST)
     app.register_endpoint("delete_website_owner", delete_website_owner, Endpoint.POST)
+
+    app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
+    app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)
+    app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
 
 def main():
     db = Database()

@@ -127,7 +127,11 @@ class Message(Base):
     
 class Cookie(Base):
     __tablename__ = 'cookies'
-    cookie_value = Column(String, primary_key=True, nullable=False)
-    email = Column(String, ForeignKey("website_owners.email"), nullable=False)
+    
+    email = Column(String, ForeignKey("website_owners.email"), primary_key=True, nullable=False)
+    is_website_owner = Column(Boolean, primary_key=True, nullable=False)
+    cookie_value = Column(String, nullable=False, unique=True)
+    creation_time = Column(DateTime, nullable=False)
+    
     owner = relationship("WebsiteOwner", back_populates="cookie")
     
