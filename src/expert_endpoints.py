@@ -55,6 +55,20 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
     db_session.commit()
     return True
 
+
+def get_certifications_for_db_user(db_user):
+    certifications_list = []
+    for certification in db_user.certifications:
+        certifications_list.append(certification.image)
+    return certifications_list
+    
+def get_specialties_for_db_user(db_user):
+    specialties_list = []
+    for specialty in db_user.specialty:
+        specialties_list.append(specialty.vulnerability)
+    
+    return specialties_list
+
 def get_expert_info(email):
     db_session = Database().get_session()
     db_user = crud.get_expert_by_email(db_session, email=email)
@@ -66,16 +80,8 @@ def get_expert_info(email):
     result["first_name"] = db_user.first_name
     result["last_name"] = db_user.last_name
     result["image"] = db_user.image
-    
-    certifications_list = []
-    for certification in db_user.certifications:
-        certifications_list.append(certification.image)
-    result["certifications"] = certifications_list
-    
-    specialties_list = []
-    for specialty in db_user.specialty:
-        specialties_list.append(specialty.vulnerability)
-    result["specialties"] = specialties_list
+    result["certifications"] = get_certifications_for_db_user(db_user)
+    result["specialties"] = get_specialties_for_db_user(db_user)
     
     client_list = []
     for message in db_user.messages:

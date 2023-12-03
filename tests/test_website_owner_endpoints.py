@@ -1,8 +1,8 @@
 import datetime
 from unittest import mock
 from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, MINNIE_IMAGE, MINNIE_URL
-from tests.constants import MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_EMAIL, DONALD_EMAIL, DONALD_FIRST_NAME, DONALD_IMAGE, DONALD_LAST_NAME, DONALD_PASSWORD, DONALD_RATING
-from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request, get_website_owner_info, FIRST_NAME_KEY, LAST_NAME_KEY, IMAGE_KEY, update_website_owner_info
+from tests.constants import MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_EMAIL, DONALD_EMAIL, DONALD_FIRST_NAME, DONALD_IMAGE, DONALD_LAST_NAME, DONALD_PASSWORD, PENTEST_IMAGE, CLOUD_IMAGE, DAISY_EMAIL, DAISY_FIRST_NAME, DAISY_IMAGE, DAISY_LAST_NAME, DAISY_PASSWORD
+from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request, get_website_owner_info, FIRST_NAME_KEY, LAST_NAME_KEY, IMAGE_KEY, update_website_owner_info, get_experts, EXPERT_EMAIL_KEY, EXPERT_IMAGE_KEY, EXPERT_SPECIALTIES_KEY, EXPERT_CERTIFICATIONS_KEY, EXPERT_LAST_NAME_KEY, EXPERT_FIRST_NAME_KEY, get_experts_by_result
 from src import models
 from tests.helpers.website_helpers import add_mock_website
 from src.website_functions import add_website_owner
@@ -10,6 +10,8 @@ from src import populate_tables
 from src.database import Database
 from src.website_functions import add_website_owner
 from src.expert_functions import add_cybersecurity_expert
+from src.expert_endpoints import create_expert_account, add_expert_info
+from src.certificate_endpoints import add_cert
 
 res = {
     populate_tables.NMAP_NAME : {
@@ -144,3 +146,54 @@ def test_update_website_owner_info():
     check_website_owner(MICKEY_PASSWORD + "a", MICKEY_IMAGE + "a")
     update_website_owner_info(MICKEY_EMAIL, image=MICKEY_IMAGE, password=MICKEY_PASSWORD)
     check_website_owner(MICKEY_PASSWORD, MICKEY_IMAGE)
+
+def test_get_experts():
+    populate_tables.populate_vulnerabilities()
+    create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_cert(PENTEST_IMAGE, DONALD_EMAIL)
+    add_cert(CLOUD_IMAGE, DONALD_EMAIL)
+
+    create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME)
+    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, "true", "false", "true", "true")
+    add_cert(CLOUD_IMAGE, DAISY_EMAIL)
+    experts = get_experts()
+    assert len(experts) == 2
+    expert_email_to_index = {}
+    for i, expert in enumerate(experts):
+        expert_email_to_index[expert[EXPERT_EMAIL_KEY]] = i
+    assert DAISY_EMAIL in expert_email_to_index
+    assert DONALD_EMAIL in expert_email_to_index
+
+    daisy_res = experts[expert_email_to_index[DAISY_EMAIL]]
+    assert daisy_res[EXPERT_FIRST_NAME_KEY] == DAISY_FIRST_NAME
+    assert daisy_res[EXPERT_LAST_NAME_KEY] == DAISY_LAST_NAME
+    assert daisy_res[EXPERT_IMAGE_KEY] == DAISY_IMAGE
+    assert set(daisy_res[EXPERT_CERTIFICATIONS_KEY]) == set([CLOUD_IMAGE])
+    assert set(daisy_res[EXPERT_SPECIALTIES_KEY]) == set([populate_tables.SQL_INJECTION_NAME, populate_tables.NMAP_NAME, populate_tables.JWT_COOKIE_HIJACKING_NAME])
+
+    donald_res = experts[expert_email_to_index[DONALD_EMAIL]]
+    assert donald_res[EXPERT_FIRST_NAME_KEY] == DONALD_FIRST_NAME
+    assert donald_res[EXPERT_LAST_NAME_KEY] == DONALD_LAST_NAME
+    assert donald_res[EXPERT_IMAGE_KEY] == DONALD_IMAGE
+    assert set(donald_res[EXPERT_CERTIFICATIONS_KEY]) == set([PENTEST_IMAGE, CLOUD_IMAGE])
+    assert set(donald_res[EXPERT_SPECIALTIES_KEY]) == set([populate_tables.XSS_NAME, populate_tables.SQL_INJECTION_NAME])
+
+def test_get_experts_by_result():
+    populate_tables.populate_vulnerabilities()
+    create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_cert(PENTEST_IMAGE, DONALD_EMAIL)
+    add_cert(CLOUD_IMAGE, DONALD_EMAIL)
+
+    create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME)
+    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, "true", "false", "true", "true")
+    add_cert(CLOUD_IMAGE, DAISY_EMAIL)
+    experts = get_experts_by_result([populate_tables.SQL_INJECTION_NAME, populate_tables.NMAP_NAME])
+    assert len(experts) == 1
+    daisy_res = experts[0]
+    assert daisy_res[EXPERT_FIRST_NAME_KEY] == DAISY_FIRST_NAME
+    assert daisy_res[EXPERT_LAST_NAME_KEY] == DAISY_LAST_NAME
+    assert daisy_res[EXPERT_IMAGE_KEY] == DAISY_IMAGE
+    assert set(daisy_res[EXPERT_CERTIFICATIONS_KEY]) == set([CLOUD_IMAGE])
+    assert set(daisy_res[EXPERT_SPECIALTIES_KEY]) == set([populate_tables.SQL_INJECTION_NAME, populate_tables.NMAP_NAME, populate_tables.JWT_COOKIE_HIJACKING_NAME])

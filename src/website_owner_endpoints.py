@@ -6,6 +6,7 @@ from typing import Dict, List, Union
 import datetime
 from .database import Database
 from src.message_functions import add_message
+from src.expert_endpoints import get_certifications_for_db_user, get_specialties_for_db_user
 
 SUCCESS_KEY = "success"
 SCORE_KEY = "score"
@@ -91,29 +92,40 @@ def update_website_owner_info(email:str, image:Union[str,None], password:Union[s
 EXPERT_FIRST_NAME_KEY = "first_name"
 EXPERT_LAST_NAME_KEY = "last_name"
 EXPERT_CERTIFICATIONS_KEY = "certifications"
-EXPERT_VULNERABILITIES_KEY = "vulnerabilities"
+EXPERT_SPECIALTIES_KEY = "specialties"
+EXPERT_IMAGE_KEY = "image"
 EXPERT_EMAIL_KEY = "email"
 
 def get_applicable_expert_information(expert_db_models:List[models.CybersecurityExpert]):
     return_lst = []
     for expert_db_model in expert_db_models:
-        certifications = []
-        for certification in expert_db_model.certifications:
-            certifications.append(certification.image)
-        vulnerabilities = []
-        for vulnerability in expert_db_model.specialty
         return_lst.append({
             EXPERT_FIRST_NAME_KEY : expert_db_model.first_name,
             EXPERT_LAST_NAME_KEY : expert_db_model.last_name,
-            EXPERT_CERTIFICATIONS_KEY : None,
-            EXPERT_VULNERABILITIES_KEY : None,
+            EXPERT_IMAGE_KEY : expert_db_model.image,
+            EXPERT_CERTIFICATIONS_KEY : get_certifications_for_db_user(expert_db_model),
+            EXPERT_SPECIALTIES_KEY : get_specialties_for_db_user(expert_db_model),
             EXPERT_EMAIL_KEY : expert_db_model.email,
         })
 
     return return_lst
 
 def get_experts():
-    ...
+    db_session = Database().get_session()
+    return get_applicable_expert_information(db_session.query(models.CybersecurityExpert).all())
 
-def get_experts_by_result():
-    ...
+def get_experts_by_result(vulnerabilities: List[str]):
+    db_session = Database().get_session()
+    filtered_experts = []
+    for expert in db_session.query(models.CybersecurityExpert).all():
+        expert_specialities = [specialty.vulnerability for specialty in expert.specialty]
+        keep_expert = True
+        for vulnerability in vulnerabilities:
+            if vulnerability not in expert_specialities:
+                keep_expert = False
+                break
+        if keep_expert:
+            filtered_experts.append(expert)
+        
+
+    return get_applicable_expert_information(filtered_experts)
