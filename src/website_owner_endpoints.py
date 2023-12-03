@@ -24,7 +24,6 @@ def get_scan_results(email:str):
         return_res[-1]["url"] = scan.website_url
         return_res[-1]["date"] = scan.date
 
-
     return return_res
 
 def add_scan_result(scan_results:Dict[str,object]):
