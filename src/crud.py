@@ -14,3 +14,10 @@ def get_expert_by_email(db: Session, email: str):
 
 def get_certifications(db: Session):
     return db.query(models.IssuedCertification).all()
+
+def get_certifications_by_image(db: Session, image: str):
+    return db.query(models.IssuedCertification).filter(models.IssuedCertification.image == image).first()
+    
+def get_message_by_emails(db: Session, expert, owner):
+    return db.query(models.Message).filter(models.Message.website_owner == owner
+                                           and models.Message.cybersecurity_expert == expert).first()

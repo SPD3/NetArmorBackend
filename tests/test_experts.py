@@ -4,12 +4,13 @@ from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_specialty, add_specialty
 from tests.helpers.expert_helpers import add_mock_expert_rating, add_mock_specialty
-from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info, remove_client
 from src.populate_tables import populate_vulnerabilities
 from src.certificate_endpoints import add_cert
 from src import models
 from src.website_owner_endpoints import create_expert_request
 from src.main import create_website_owner
+from src import crud
 
 
 def test_add_cybersecurity_expert_table():
@@ -85,7 +86,7 @@ def test_delete_expert():
 def test_add_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     db = Database().get_session()
     query = db.query(models.Specialty).filter(models.Specialty.expert == DONALD_EMAIL).all()
     assert (len(query) == 2)
@@ -98,7 +99,7 @@ def test_add_expert_info():
 def test_get_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     add_cert(PENTEST_IMAGE, DONALD_EMAIL)
     add_cert(CLOUD_IMAGE, DONALD_EMAIL)
     create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE)
@@ -111,3 +112,15 @@ def test_get_expert_info():
            and result["image"] == DONALD_IMAGE and result["certifications"] == [PENTEST_IMAGE, CLOUD_IMAGE]
            and result["specialties"] == ["SQL Injection", "Cross-Site Scripting"]
            and result["clients"] == [MICKEY_EMAIL, MINNIE_EMAIL])
+
+def test_remove_client():
+    create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
+    create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE)
+    create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
+    create_expert_request(MICKEY_EMAIL, DONALD_EMAIL, MICKEY_MESSAGE)
+    create_expert_request(MINNIE_EMAIL, DONALD_EMAIL, MINNIE_MESSAGE)
+    remove_client(DONALD_EMAIL, MINNIE_EMAIL)
+    db = Database().get_session()
+    messages = db.query(models.Message).filter(models.Message.cybersecurity_expert == DONALD_EMAIL).all()
+    assert(len(messages) == 1)
+    assert(MICKEY_EMAIL == messages[0].website_owner)

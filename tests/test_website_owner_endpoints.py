@@ -150,12 +150,12 @@ def test_update_website_owner_info():
 def test_get_experts():
     populate_tables.populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     add_cert(PENTEST_IMAGE, DONALD_EMAIL)
     add_cert(CLOUD_IMAGE, DONALD_EMAIL)
 
     create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME)
-    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, "true", "false", "true", "true")
+    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, True, False, True, True)
     add_cert(CLOUD_IMAGE, DAISY_EMAIL)
     experts = get_experts()
     assert len(experts) == 2
@@ -182,12 +182,12 @@ def test_get_experts():
 def test_get_experts_by_result():
     populate_tables.populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     add_cert(PENTEST_IMAGE, DONALD_EMAIL)
     add_cert(CLOUD_IMAGE, DONALD_EMAIL)
 
     create_expert_account(DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME)
-    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, "true", "false", "true", "true")
+    add_expert_info(DAISY_EMAIL, DAISY_IMAGE, True, False, True, True)
     add_cert(CLOUD_IMAGE, DAISY_EMAIL)
     experts = get_experts_by_result([populate_tables.SQL_INJECTION_NAME, populate_tables.NMAP_NAME])
     assert len(experts) == 1
