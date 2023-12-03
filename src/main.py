@@ -82,7 +82,7 @@ def register_endpoints(app:App):
     app.register_endpoint("create_expert_request", create_expert_request, Endpoint.POST)
     app.register_endpoint("update_website_owner_info", update_website_owner_info, Endpoint.POST)
     app.register_endpoint("get_experts", get_experts, Endpoint.GET)
-    app.register_endpoint("get_experts_by_result", get_experts_by_result, Endpoint.POST)
+    app.register_endpoint("get_experts_by_result", get_experts_by_result, Endpoint.GET)
 
     app.register_endpoint("clear_tables", clear_tables, Endpoint.GET)
 
