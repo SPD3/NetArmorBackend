@@ -88,3 +88,13 @@ def get_expert_info(email):
         client_list.append(message.website_owner)
     result["clients"] = client_list
     return result
+
+def remove_client(expert_email, owner_email):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=expert_email)
+    if db_user is None:
+        return False
+    db_message = crud.get_message_by_emails(db_session, expert_email, owner_email)
+    db_session.delete(db_message)
+    db_session.commit()
+    return True
