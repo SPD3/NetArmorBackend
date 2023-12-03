@@ -1,10 +1,13 @@
 import datetime
 from unittest import mock
+from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, MINNIE_IMAGE, MINNIE_URL
+from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, get_website_owner_info, FIRST_NAME_KEY, LAST_NAME_KEY, IMAGE_KEY
 from tests.constants import MINNIE_EMAIL, MINNIE_URL
 from tests.constants import MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_EMAIL, DONALD_EMAIL, DONALD_FIRST_NAME, DONALD_IMAGE, DONALD_LAST_NAME, DONALD_PASSWORD, DONALD_RATING
 from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request
 from src import models
 from tests.helpers.website_helpers import add_mock_website
+from src.website_functions import add_website_owner
 from src import populate_tables
 from src.database import Database
 from src.website_functions import add_website_owner
@@ -88,6 +91,11 @@ def test_get_scan_results(mock_date):
         assert scan["scan_type"] == scan_results["scan_type"]
         assert scan["date"] == mock_now
 
+def test_get_website_owner_info():
+    session = Database().get_session()
+    add_website_owner(session, MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE)
+    session.commit()
+    info = get_website_owner_info(MINNIE_EMAIL)
 @mock.patch('src.website_owner_endpoints.datetime', side_effect=lambda *args, **kw: datetime.date(*args, **kw))
 def test_create_expert_request(mock_date):
     mock_now = datetime.datetime(year=2023, month=1, day=10)
@@ -114,4 +122,8 @@ def test_create_expert_request(mock_date):
     mock_date.datetime.now.return_value = mock_now2
     assert not create_expert_request(MICKEY_EMAIL, DONALD_EMAIL, message=message2)
     check_message()
+
+    assert info[FIRST_NAME_KEY] == MINNIE_FIRST_NAME
+    assert info[LAST_NAME_KEY] == MINNIE_LAST_NAME
+    assert info[IMAGE_KEY] == MINNIE_IMAGE
 

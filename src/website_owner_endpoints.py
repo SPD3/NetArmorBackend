@@ -46,6 +46,10 @@ def get_scan_results(email:str):
         return_res[-1]["scan_type"] = "deep_scan" if scan.deep else "basic_scan"
 
     return return_res
+
+FIRST_NAME_KEY = "first_name"
+LAST_NAME_KEY = "last_name"
+IMAGE_KEY = "image"
     
 def create_expert_request(website_owner_email:str, cybersecurity_expert_email:str, message:str):
     db_session = Database().get_session()
@@ -57,3 +61,16 @@ def create_expert_request(website_owner_email:str, cybersecurity_expert_email:st
     add_message(db_session, website_owner_email, cybersecurity_expert_email, message, is_pending=True, time_sent=datetime.datetime.now())
     db_session.commit()
     return True
+
+def get_website_owner_info(email:str):
+    db_session = Database().get_session()
+    website_owner = db_session.query(models.WebsiteOwner).filter(models.WebsiteOwner.email==email).all()
+    if len(website_owner) != 1:
+        return None
+    website_owner = website_owner[0]
+
+    return {
+        FIRST_NAME_KEY : website_owner.first_name,
+        LAST_NAME_KEY : website_owner.last_name,
+        IMAGE_KEY : website_owner.image,
+    }
