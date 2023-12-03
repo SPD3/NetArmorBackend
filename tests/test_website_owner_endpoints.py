@@ -2,7 +2,7 @@ import datetime
 from unittest import mock
 from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, MINNIE_IMAGE, MINNIE_URL
 from tests.constants import MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_EMAIL, DONALD_EMAIL, DONALD_FIRST_NAME, DONALD_IMAGE, DONALD_LAST_NAME, DONALD_PASSWORD, DONALD_RATING
-from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request, get_website_owner_info, FIRST_NAME_KEY, LAST_NAME_KEY, IMAGE_KEY
+from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request, get_website_owner_info, FIRST_NAME_KEY, LAST_NAME_KEY, IMAGE_KEY, update_website_owner_info
 from src import models
 from tests.helpers.website_helpers import add_mock_website
 from src.website_functions import add_website_owner
@@ -125,5 +125,22 @@ def test_create_expert_request(mock_date):
     assert not create_expert_request(MICKEY_EMAIL, DONALD_EMAIL, message=message2)
     check_message()
 
-    
+def test_update_website_owner_info():
+    session = Database().get_session()
+    add_website_owner(session, MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, image=MICKEY_IMAGE)
+    session.commit()
+    def check_website_owner(password, image):
+        website_owner = session.query(models.WebsiteOwner).filter(
+                                        models.WebsiteOwner.email==MICKEY_EMAIL).all()
+        assert len(website_owner) == 1
+        website_owner = website_owner[0]
+        assert website_owner.password == password
+        assert website_owner.image == image
+    check_website_owner(MICKEY_PASSWORD, MICKEY_IMAGE)
 
+    update_website_owner_info(MICKEY_EMAIL, image=None, password=MICKEY_PASSWORD + "a")
+    check_website_owner(MICKEY_PASSWORD + "a", MICKEY_IMAGE)
+    update_website_owner_info(MICKEY_EMAIL, image=MICKEY_IMAGE + "a", password=None)
+    check_website_owner(MICKEY_PASSWORD + "a", MICKEY_IMAGE + "a")
+    update_website_owner_info(MICKEY_EMAIL, image=MICKEY_IMAGE, password=MICKEY_PASSWORD)
+    check_website_owner(MICKEY_PASSWORD, MICKEY_IMAGE)

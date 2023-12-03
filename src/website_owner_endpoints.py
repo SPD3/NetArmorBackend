@@ -2,7 +2,7 @@ from src import models
 from src.scan_functions import add_scan
 from src.vulnerability_functions import add_tested_vulnerability
 from src.website_functions import add_website
-from typing import Dict
+from typing import Dict, Union
 import datetime
 from .database import Database
 from src.message_functions import add_message
@@ -74,3 +74,16 @@ def get_website_owner_info(email:str):
         LAST_NAME_KEY : website_owner.last_name,
         IMAGE_KEY : website_owner.image,
     }
+
+def update_website_owner_info(email:str, image:Union[str,None], password:Union[str,None]):
+    db_session = Database().get_session()
+    website_owner = db_session.query(models.WebsiteOwner).filter(models.WebsiteOwner.email==email).all()
+    if len(website_owner) != 1:
+        return None
+    website_owner = website_owner[0]
+    if image:
+        website_owner.image = image
+    if password:
+        website_owner.password = password
+    db_session.commit()
+    return 
