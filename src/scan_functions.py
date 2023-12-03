@@ -14,4 +14,5 @@ def check_scan(db_session,website_owner, website_url, deep, date):
 def add_scan(db_session, owner_email, url, deep, date):
     db_scan = models.Scan(website_owner=owner_email, website_url=url, deep=deep, date=date)
     db_session.add(db_scan)
+    db_session.commit() # need to commit here to generate a scan_id
     return db_scan.scan_id
