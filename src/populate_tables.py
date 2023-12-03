@@ -40,12 +40,18 @@ def is_already_pre_populated():
     
     return False
 
+def get_image_str(image_location:str):
+    try:
+        with open("images/sean_profile_picture.png", "rb") as image:
+            return base64.b64encode(image.read())
+    except:
+        return ""
+
 def populate_sample_cybersecurity_experts():
     sean_email = "spd7416@nyu.edu"
-    with open("images/sean_profile_picture.png", "rb") as image:
-        sean_image = base64.b64encode(image.read())
+    
     expert_endpoints.create_expert_account(sean_email, "seanpassword", "Sean", "Doyle")
-    expert_endpoints.add_expert_info(sean_email, sean_image, True, True, False, False)
+    expert_endpoints.add_expert_info(sean_email, get_image_str("images/sean_profile_picture"), True, True, False, False)
 
 
 def populate_sample_website_owners():
