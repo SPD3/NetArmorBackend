@@ -7,7 +7,14 @@ from src.vulnerability_functions import add_vulnerability
 from src.database import Database
 from src.models import Base
 from src.config import get_settings
+from sqlalchemy import event
 import contextlib
+from src.models import Base
+
+SQL_INJECTION_NAME = "SQL Injection"
+XSS_NAME = "Cross-Site Scripting"
+NMAP_NAME = "NMAP"
+JWT_COOKIE_HIJACKING_NAME = "JWT Cookie Hijacking"
 
 def create_vulnerability(vulnerability, date_added):
     db_session = Database().get_session()
@@ -16,19 +23,24 @@ def create_vulnerability(vulnerability, date_added):
     return True
 
 def populate_vulnerabilities():
-    create_vulnerability("SQL Injection", date.today())
-    create_vulnerability("Cross-Site Scripting", date.today())
-    create_vulnerability("NMAP", date.today())
-    create_vulnerability("JWT Cookie Hijacking", date.today())
+    create_vulnerability(SQL_INJECTION_NAME, date.today())
+    create_vulnerability(XSS_NAME, date.today())
+    create_vulnerability(NMAP_NAME, date.today())
+    create_vulnerability(JWT_COOKIE_HIJACKING_NAME, date.today())
     
+def is_already_pre_populated():
+    """Checks to see if any of the tables already have entries in them."""
+    tables = Base.__subclasses__()
+    db_session = Database().get_session()
+    for t in tables:
+        if len(db_session.query(t).all()) != 0:
+            return True
+    
+    return False
 def populate_tables():
-    meta = Base.metadata
-    with contextlib.closing(Database().get_engine().connect()) as con:
-        trans = con.begin()
-        tables = meta.sorted_tables
-        for table in reversed(tables):
-            con.execute(table.delete())
-        trans.commit()
-
+    if is_already_pre_populated():
+        return
     populate_vulnerabilities()
+
+
     
