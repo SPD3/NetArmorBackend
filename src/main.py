@@ -12,6 +12,7 @@ from datetime import date
 from sqlalchemy import event
 from src.models import Base
 import contextlib
+from src.certificate_endpoints import add_cert
 
 from src import models
 
@@ -69,7 +70,9 @@ def register_endpoints(app:App):
     app.register_endpoint("create_expert_account", create_expert_account, Endpoint.POST)
     app.register_endpoint("delete_expert", delete_expert, Endpoint.POST)
     app.register_endpoint("add_expert_info", add_expert_info, Endpoint.POST)
-
+    app.register_endpoint("get_expert_info", get_expert_info, Endpoint.GET)
+    
+    app.register_endpoint("add_cert", add_cert, Endpoint.POST)
 
     app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
     app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)

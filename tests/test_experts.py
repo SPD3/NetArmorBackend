@@ -1,11 +1,12 @@
 import pytest
 from src.database import Database
-from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_RATING, DAISY_IMAGE, MINNIE_EMAIL, XSS_NAME, DONALD_EMAIL, MICKEY_EMAIL, SQLI_NAME, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE, DONALD_RATING, TEST_IMAGE
+from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_RATING, DAISY_IMAGE, MINNIE_EMAIL, XSS_NAME, DONALD_EMAIL, MICKEY_EMAIL, SQLI_NAME, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE, DONALD_RATING, TEST_IMAGE, PENTEST_IMAGE, CLOUD_IMAGE
 from tests.test_main import generic_add_test, generic_duplicate_test
 from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_specialty, add_specialty
 from tests.helpers.expert_helpers import add_mock_expert_rating, add_mock_specialty
-from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info
 from src.populate_tables import populate_vulnerabilities
+from src.certificate_endpoints import add_cert
 from datetime import date
 from src import models
 
@@ -83,7 +84,7 @@ def test_delete_expert():
 def test_add_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
     db = Database().get_session()
     query = db.query(models.Specialty).filter(models.Specialty.expert == DONALD_EMAIL).all()
     assert (len(query) == 2)
@@ -92,3 +93,16 @@ def test_add_expert_info():
         assert (vulnerability.expert == DONALD_EMAIL)
         vulnerability_set.add(vulnerability.vulnerability)
     assert ("SQL Injection" in vulnerability_set and "Cross-Site Scripting" in vulnerability_set)
+
+def test_get_expert_info():
+    populate_vulnerabilities()
+    create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_cert(PENTEST_IMAGE, DONALD_EMAIL)
+    add_cert(CLOUD_IMAGE, DONALD_EMAIL)
+    
+    result = get_expert_info(DONALD_EMAIL)
+    assert(result["email"] == DONALD_EMAIL and result["password"] == DONALD_PASSWORD 
+           and result["first_name"] == DONALD_FIRST_NAME and result["last_name"] == DONALD_LAST_NAME
+           and result["image"] == DONALD_IMAGE and result["certifications"] == [PENTEST_IMAGE, CLOUD_IMAGE]
+           and result["specialties"] == ["SQL Injection", "Cross-Site Scripting"])
