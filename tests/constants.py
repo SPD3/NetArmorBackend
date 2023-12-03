@@ -14,6 +14,7 @@ MICKEY_PAYLOAD = "mickey payload"
 MICKEY_STATUS = False
 MICKEY_SENT_TIME = datetime(2023, 11, 19, 12, 0, 0)
 MICKEY_COOKIE = "mickey cookie"
+MICKEY_MESSAGE = "mickey message"
 
 
 MINNIE_EMAIL = "minnie@mouse.com"
@@ -30,6 +31,7 @@ MINNIE_PAYLOAD = "minnie payload"
 MINNIE_STATUS = True
 MINNIE_SENT_TIME = datetime.today()
 MINNIE_COOKIE = "minnie cookie"
+MINNIE_MESSAGE = "minnie message"
 
 
 PENTEST_CERTIFICATION_NAME = "PenTest+"
