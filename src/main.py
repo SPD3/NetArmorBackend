@@ -6,6 +6,7 @@ from tg.util import Bunch
 from src.netarmor_api import App, Endpoint
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
 from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
+from src.website_owner_endpoints import add_scan_result, get_scan_results
 from src.populate_tables import populate_tables
 from datetime import date
 from sqlalchemy import event
@@ -72,6 +73,9 @@ def register_endpoints(app:App):
 
     app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
     app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)
+    app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
+
+    app.register_endpoint("get_scan_results", get_scan_results, Endpoint.GET)
     app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
 
     app.register_endpoint("clear_tables", clear_tables, Endpoint.GET)
