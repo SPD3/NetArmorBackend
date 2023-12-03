@@ -53,3 +53,18 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True
+
+def get_expert_info(email, image, sql, xss, nmap, jwt):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=email)
+    if db_user is None:
+        return False
+    result = {}
+    result["email"] = db_user.email
+    result["password"] = db_user.password
+    result["first_name"] = db_user.first_name
+    result["last_name"] = db_user.last_name
+    result["image"] = db_user.image
+    result["specialties"] = db_user.specialty.vulnerability
+    result["ratings"] = db_user.ratings.rating
+    return result

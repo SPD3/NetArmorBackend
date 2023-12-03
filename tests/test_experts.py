@@ -89,5 +89,6 @@ def test_add_expert_info():
     assert (len(query) == 2)
     vulnerability_set = set()
     for vulnerability in query:
+        assert (vulnerability.expert == DONALD_EMAIL)
         vulnerability_set.add(vulnerability.vulnerability)
     assert ("SQL Injection" in vulnerability_set and "Cross-Site Scripting" in vulnerability_set)
