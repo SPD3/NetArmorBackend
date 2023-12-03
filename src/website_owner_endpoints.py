@@ -2,7 +2,7 @@ from src import models
 from src.scan_functions import add_scan
 from src.vulnerability_functions import add_tested_vulnerability
 from src.website_functions import add_website
-from typing import Dict, Union
+from typing import Dict, List, Union
 import datetime
 from .database import Database
 from src.message_functions import add_message
@@ -87,3 +87,28 @@ def update_website_owner_info(email:str, image:Union[str,None], password:Union[s
         website_owner.password = password
     db_session.commit()
     return 
+
+EXPERT_FIRST_NAME_KEY = "first_name"
+EXPERT_LAST_NAME_KEY = "last_name"
+EXPERT_CERTIFICATIONS_KEY = "certifications"
+EXPERT_VULNERABILITIES_KEY = "vulnerabilities"
+EXPERT_EMAIL_KEY = "email"
+
+def get_applicable_expert_information(expert_db_models:List[models.CybersecurityExpert]):
+    return_lst = []
+    for expert_db_model in expert_db_models:
+        return_lst.append({
+            EXPERT_FIRST_NAME_KEY : None,
+            EXPERT_LAST_NAME_KEY : None,
+            EXPERT_CERTIFICATIONS_KEY : None,
+            EXPERT_VULNERABILITIES_KEY : None,
+            EXPERT_EMAIL_KEY : None,
+        })
+
+    return return_lst
+
+def get_experts():
+    ...
+
+def get_experts_by_result():
+    ...
