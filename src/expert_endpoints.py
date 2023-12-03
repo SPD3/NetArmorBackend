@@ -6,7 +6,7 @@ from tg.util import Bunch
 from src.netarmor_api import App, Endpoint
 from src.expert_functions import add_specialty
 from src.populate_tables import SQL_INJECTION_NAME, XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME
-from src.utils import convert_strings_to_bools
+from src.utils import convert_string_to_bool
 
 def check_expert_info(email, password):
     db_session = Database().get_session()
@@ -44,15 +44,13 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
     if db_user is None:
         return False
     db_user.image = image
-    params = [sql, xss, nmap, jwt]
-    convert_strings_to_bools(params)
-    if params[0]:
+    if convert_string_to_bool(sql):
         add_specialty(db_session, email, SQL_INJECTION_NAME)
-    if params[1]:
+    if convert_string_to_bool(xss):
         add_specialty(db_session, email, XSS_NAME)
-    if params[2]:
+    if convert_string_to_bool(nmap):
         add_specialty(db_session, email, NMAP_NAME)
-    if params[3]:
+    if convert_string_to_bool(jwt):
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True
