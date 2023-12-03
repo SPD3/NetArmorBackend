@@ -56,8 +56,6 @@ def test_create_website_owner():
                     lambda: create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE), 
                     lambda: check_website_owner(db_session, MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE),
                     lambda: create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE))
-    delete_website_owner(MICKEY_EMAIL)
-    delete_website_owner(MINNIE_EMAIL)
     db_session.rollback()
     
 def test_website_owner_exists():
@@ -65,20 +63,16 @@ def test_website_owner_exists():
                     lambda: create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE), 
                     lambda: website_owner_exists(MINNIE_EMAIL),
                     lambda: create_website_owner(MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE))
-    delete_website_owner(MICKEY_EMAIL)
-    delete_website_owner(MINNIE_EMAIL)
     
 def test_check_website_owner_credentials():
     create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE)
     assert (check_website_owner_credentials(MICKEY_EMAIL, MICKEY_PASSWORD) == True 
             and check_website_owner_credentials(MICKEY_EMAIL, MINNIE_PASSWORD) == False)
-    delete_website_owner(MICKEY_EMAIL)
     
 def test_delete_website_owner():
     create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE)
     assert (website_owner_exists(MICKEY_EMAIL) == True)
     assert (delete_website_owner(MICKEY_EMAIL) == True)
     assert (website_owner_exists(MICKEY_EMAIL) == False)
-    delete_website_owner(MICKEY_EMAIL)
 
     

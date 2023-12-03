@@ -6,6 +6,7 @@ from tg.util import Bunch
 from src.netarmor_api import App, Endpoint
 from src.expert_functions import add_specialty
 from src.populate_tables import SQL_INJECTION_NAME, XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME
+from src.utils import convert_string_to_bool
 
 def check_expert_info(email, password):
     db_session = Database().get_session()
@@ -43,13 +44,41 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
     if db_user is None:
         return False
     db_user.image = image
-    if sql:
+    if convert_string_to_bool(sql):
         add_specialty(db_session, email, SQL_INJECTION_NAME)
-    if xss:
+    if convert_string_to_bool(xss):
         add_specialty(db_session, email, XSS_NAME)
-    if nmap:
+    if convert_string_to_bool(nmap):
         add_specialty(db_session, email, NMAP_NAME)
-    if jwt:
+    if convert_string_to_bool(jwt):
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True
+
+def get_expert_info(email):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=email)
+    if db_user is None:
+        return False
+    result = {}
+    result["email"] = db_user.email
+    result["password"] = db_user.password
+    result["first_name"] = db_user.first_name
+    result["last_name"] = db_user.last_name
+    result["image"] = db_user.image
+    
+    certifications_list = []
+    for certification in db_user.certifications:
+        certifications_list.append(certification.image)
+    result["certifications"] = certifications_list
+    
+    specialties_list = []
+    for specialty in db_user.specialty:
+        specialties_list.append(specialty.vulnerability)
+    result["specialties"] = specialties_list
+    
+    client_list = []
+    for message in db_user.messages:
+        client_list.append(message.website_owner)
+    result["clients"] = client_list
+    return result

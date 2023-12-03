@@ -42,7 +42,7 @@ def test_validate_cookie(mock_date):
 
     assert validate_cookie(cookie, "true") == MINNIE_EMAIL
     assert validate_cookie(cookie, "false") is None
-    assert validate_cookie(cookie + "a", True) is None
+    assert validate_cookie(cookie + "a", "True") is None
 
     invalid_now = mock_now + datetime.timedelta(days=10)
     mock_date.datetime.now.return_value = invalid_now
