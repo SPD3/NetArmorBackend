@@ -76,7 +76,7 @@ def register_endpoints(app:App):
     app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
 
     app.register_endpoint("get_scan_results", get_scan_results, Endpoint.GET)
-    app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
+    app.register_endpoint("add_scan_result", add_scan_result, Endpoint.POST)
 
     app.register_endpoint("clear_tables", clear_tables, Endpoint.GET)
 
