@@ -5,6 +5,7 @@ from src.website_functions import add_website
 from typing import Dict
 import datetime
 from .database import Database
+from src.message_functions import add_message
 
 SUCCESS_KEY = "success"
 SCORE_KEY = "score"
@@ -50,6 +51,17 @@ FIRST_NAME_KEY = "first_name"
 LAST_NAME_KEY = "last_name"
 IMAGE_KEY = "image"
     
+def create_expert_request(website_owner_email:str, cybersecurity_expert_email:str, message:str):
+    db_session = Database().get_session()
+    messages = db_session.query(models.Message).filter(
+                                        models.Message.website_owner==website_owner_email
+                                        and models.Message.cybersecurity_expert==cybersecurity_expert_email).all()
+    if len(messages) != 0:
+        return False
+    add_message(db_session, website_owner_email, cybersecurity_expert_email, message, is_pending=True, time_sent=datetime.datetime.now())
+    db_session.commit()
+    return True
+
 def get_website_owner_info(email:str):
     db_session = Database().get_session()
     website_owner = db_session.query(models.WebsiteOwner).filter(models.WebsiteOwner.email==email).all()

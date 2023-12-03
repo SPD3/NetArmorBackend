@@ -117,7 +117,7 @@ class Message(Base):
     website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
     cybersecurity_expert = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
     payload = Column(String, nullable=False)
-    status = Column(Boolean, nullable=False)
+    is_pending = Column(Boolean, nullable=False)
     time_sent = Column(DateTime, nullable=False)
     expert = relationship("CybersecurityExpert", back_populates="messages")
     owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_messages")
