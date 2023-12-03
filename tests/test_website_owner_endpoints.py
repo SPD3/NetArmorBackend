@@ -1,11 +1,14 @@
 import datetime
 from unittest import mock
-from tests.constants import MINNIE_EMAIL, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, MINNIE_IMAGE, MINNIE_URL
-from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY
+from tests.constants import MINNIE_EMAIL, MINNIE_URL
+from tests.constants import MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_EMAIL, DONALD_EMAIL, DONALD_FIRST_NAME, DONALD_IMAGE, DONALD_LAST_NAME, DONALD_PASSWORD, DONALD_RATING
+from src.website_owner_endpoints import get_scan_results, add_scan_result, SUCCESS_KEY, SCORE_KEY, DESCRIPTION_KEY, create_expert_request
 from src import models
 from tests.helpers.website_helpers import add_mock_website
 from src import populate_tables
 from src.database import Database
+from src.website_functions import add_website_owner
+from src.expert_functions import add_cybersecurity_expert
 
 res = {
     populate_tables.NMAP_NAME : {
@@ -81,4 +84,31 @@ def test_get_scan_results(mock_date):
         assert scan["url"] == scan_results["url"]
         assert scan["scan_type"] == scan_results["scan_type"]
         assert scan["date"] == mock_now
+
+@mock.patch('src.website_owner_endpoints.datetime', side_effect=lambda *args, **kw: datetime.date(*args, **kw))
+def test_create_expert_request(mock_date):
+    mock_now = datetime.datetime(year=2023, month=1, day=10)
+    mock_date.datetime.now.return_value = mock_now
+    session = Database().get_session()
+    add_website_owner(session, MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, image=MICKEY_IMAGE)
+    add_cybersecurity_expert(session, DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE)
+    session.commit()
+    message_str = "My Message"
+    assert create_expert_request(MICKEY_EMAIL, DONALD_EMAIL, message=message_str)
+    def check_message():
+        messages = session.query(models.Message).filter(
+                                        models.Message.website_owner==MICKEY_EMAIL
+                                        and models.Message.cybersecurity_expert==DONALD_EMAIL).all()
+        assert len(messages) == 1
+        message = messages[0]
+        assert message.is_pending
+        assert message.payload == message_str
+        assert message.time_sent == mock_now
+        
+    check_message()
+    message2 = "My Message 2"
+    mock_now2 = datetime.date(year=2023, month=1, day=10)
+    mock_date.datetime.now.return_value = mock_now2
+    assert not create_expert_request(MICKEY_EMAIL, DONALD_EMAIL, message=message2)
+    check_message()
 
