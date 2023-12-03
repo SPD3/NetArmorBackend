@@ -5,6 +5,7 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 from src.expert_functions import add_specialty
+from src.populate_tables import SQL_INJECTION_NAME, XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME
 
 def check_expert_info(email, password):
     db_session = Database().get_session()
@@ -43,12 +44,12 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
         return False
     db_user.image = image
     if sql:
-        add_specialty(db_session, email, "SQL Injection")
+        add_specialty(db_session, email, SQL_INJECTION_NAME)
     if xss:
-        add_specialty(db_session, email, "Cross-Site Scripting")
+        add_specialty(db_session, email, XSS_NAME)
     if nmap:
-        add_specialty(db_session, email, "NMAP")
+        add_specialty(db_session, email, NMAP_NAME)
     if jwt:
-        add_specialty(db_session, email, "JWT Cookie Hijacking")
+        add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True
