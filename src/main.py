@@ -5,12 +5,12 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
-from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info, remove_client
 from src.website_owner_endpoints import add_scan_result, get_scan_results, create_expert_request, get_website_owner_info, update_website_owner_info, get_experts, get_experts_by_result
 from src.populate_tables import populate_tables
 from src.models import Base
 import contextlib
-from src.certificate_endpoints import add_cert
+from src.certificate_endpoints import add_cert, remove_cert
 
 def check_website_owner_credentials(email, password):
     db_session = Database().get_session()
@@ -66,8 +66,11 @@ def register_endpoints(app:App):
     app.register_endpoint("delete_expert", delete_expert, Endpoint.POST)
     app.register_endpoint("add_expert_info", add_expert_info, Endpoint.POST)
     app.register_endpoint("get_expert_info", get_expert_info, Endpoint.GET)
+    app.register_endpoint("remove_client", remove_client, Endpoint.POST)
     
     app.register_endpoint("add_cert", add_cert, Endpoint.POST)
+    app.register_endpoint("remove_cert", remove_cert, Endpoint.POST)
+
 
     app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
     app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)

@@ -44,13 +44,13 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
     if db_user is None:
         return False
     db_user.image = image
-    if convert_string_to_bool(sql):
+    if sql:
         add_specialty(db_session, email, SQL_INJECTION_NAME)
-    if convert_string_to_bool(xss):
+    if xss:
         add_specialty(db_session, email, XSS_NAME)
-    if convert_string_to_bool(nmap):
+    if nmap:
         add_specialty(db_session, email, NMAP_NAME)
-    if convert_string_to_bool(jwt):
+    if jwt:
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True
@@ -88,3 +88,13 @@ def get_expert_info(email):
         client_list.append(message.website_owner)
     result["clients"] = client_list
     return result
+
+def remove_client(expert_email, owner_email):
+    db_session = Database().get_session()
+    db_user = crud.get_expert_by_email(db_session, email=expert_email)
+    if db_user is None:
+        return False
+    db_message = crud.get_message_by_emails(db_session, expert_email, owner_email)
+    db_session.delete(db_message)
+    db_session.commit()
+    return True
