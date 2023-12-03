@@ -69,7 +69,7 @@ class Specialty(Base):
     
 class Scan(Base):
     __tablename__ = 'scans'
-    scan_id = Column(Integer, primary_key=True, nullable=False, index=True)
+    scan_id = Column(Integer, primary_key=True, autoincrement=True)
     website_owner = Column(String, ForeignKey('website_owners.email'), nullable=False)
     website_url = Column(String, ForeignKey('websites.url'), nullable=False)
     deep = Column(Boolean, nullable=False)
