@@ -64,6 +64,9 @@ def test_add_scan_result(mock_date):
         assert vulnerability.score == res[vulnerability_name]["score"]
         assert vulnerability.success == res[vulnerability_name]["success"]
         assert vulnerability.description == res[vulnerability_name]["description"]
+    new_scan_results = scan_results.copy()
+    new_scan_results["url"] += "a"
+    add_scan_result(new_scan_results)
 
 @mock.patch('src.website_owner_endpoints.datetime', side_effect=lambda *args, **kw: datetime.date(*args, **kw))
 def test_get_scan_results(mock_date):

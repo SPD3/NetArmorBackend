@@ -1,6 +1,7 @@
 from src import models
 from src.scan_functions import add_scan
 from src.vulnerability_functions import add_tested_vulnerability
+from src.website_functions import add_website
 from typing import Dict
 import datetime
 from .database import Database
@@ -17,6 +18,8 @@ def add_scan_result(scan_results:Dict[str,object]):
     is_deep_scan = scan_results["scan_type"] == "deep_scan"
     scan_time = datetime.datetime.now()
     db_session = Database().get_session()
+    if len(db_session.query(models.Website).filter(models.Website.url == url).all()) == 0:
+        add_website(db_session=db_session, url=url, owner_email=account_email, website_name=url)
     scan_id = add_scan(db_session=db_session, owner_email=account_email, url=url, deep=is_deep_scan, date=scan_time)
     for vulnerability in result:
         add_tested_vulnerability(db_session, scan_id, vulnerability, result[vulnerability][SCORE_KEY], result[vulnerability][SUCCESS_KEY], result[vulnerability][DESCRIPTION_KEY])
