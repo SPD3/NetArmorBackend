@@ -65,7 +65,6 @@ class Specialty(Base):
     cybersecurity_expert = relationship("CybersecurityExpert", back_populates="specialty")
     vulnerabilities = relationship("Vulnerability", back_populates="experts")
     
-
 class Scan(Base):
     __tablename__ = 'scans'
     scan_id = Column(Integer, primary_key=True, autoincrement=True)
