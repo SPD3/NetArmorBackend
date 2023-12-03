@@ -1,3 +1,4 @@
+import base64
 from .database import Database
 from src.config import settings
 
@@ -10,6 +11,7 @@ from src.config import get_settings
 from sqlalchemy import event
 import contextlib
 from src.models import Base
+from src import expert_endpoints
 
 SQL_INJECTION_NAME = "SQL Injection"
 XSS_NAME = "Cross-Site Scripting"
@@ -37,10 +39,26 @@ def is_already_pre_populated():
             return True
     
     return False
+
+def populate_sample_cybersecurity_experts():
+    sean_email = "spd7416@nyu.edu"
+    with open("images/sean_profile_picture.png", "rb") as image:
+        sean_image = base64.b64encode(image.read())
+    expert_endpoints.create_expert_account(sean_email, "seanpassword", "Sean", "Doyle")
+    expert_endpoints.add_expert_info(sean_email, sean_image, True, True, False, False)
+
+
+def populate_sample_website_owners():
+    db_session = Database().get_session()
+    ... 
+
 def populate_tables():
     if is_already_pre_populated():
         return
     populate_vulnerabilities()
+    populate_sample_cybersecurity_experts()
+    populate_sample_website_owners()
+
 
 
     
