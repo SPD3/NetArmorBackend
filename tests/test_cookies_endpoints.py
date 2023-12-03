@@ -40,13 +40,13 @@ def test_validate_cookie(mock_date):
     mock_date.datetime.now.return_value = mock_now
     cookie = create_website_owner_and_cookie(MINNIE_EMAIL)
 
-    assert validate_cookie(cookie, True) == MINNIE_EMAIL
-    assert validate_cookie(cookie, False) is None
+    assert validate_cookie(cookie, "true") == MINNIE_EMAIL
+    assert validate_cookie(cookie, "false") is None
     assert validate_cookie(cookie + "a", True) is None
 
     invalid_now = mock_now + datetime.timedelta(days=10)
     mock_date.datetime.now.return_value = invalid_now
-    assert validate_cookie(cookie, True) is None 
+    assert validate_cookie(cookie, "true") is None 
 
 def test_delete_cookie():
     cookie = create_website_owner_and_cookie(MINNIE_EMAIL)

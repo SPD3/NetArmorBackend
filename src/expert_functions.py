@@ -11,7 +11,7 @@ def check_cybersecurity_expert(db_session, email, password, first_name, last_nam
             and cybersecurity_expert.last_name == last_name
             and cybersecurity_expert.image == image)
 
-def add_cybersecurity_expert(db_session, email, password, first_name, last_name, image):
+def add_cybersecurity_expert(db_session, email, password, first_name, last_name, image=""):
     db_cybersecurity_expert = models.CybersecurityExpert(email=email, 
                                                          password=password, 
                                                          first_name=first_name, 

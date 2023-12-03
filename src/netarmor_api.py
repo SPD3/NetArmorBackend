@@ -56,7 +56,7 @@ class App:
             setattr(endpoint_type, endpoint_label, controller)
         return endpoint_type()
     
-    def run(self, host, port, sql_alchemy_database_url= None, model_bunch=None):
+    def run(self, host, port, sql_alchemy_database_url= None, model_bunch=None, run_before_hosting=None):
         root_controller = self._create_controller("root", self.endpoints, TGController)
         config = AppConfig(minimal=True, root_controller=root_controller)
         if sql_alchemy_database_url is not None:
@@ -66,4 +66,6 @@ class App:
             config["model"] = model_bunch
         application = config.make_wsgi_app()
         httpd = make_server(host, port, application)
+        if run_before_hosting:
+            run_before_hosting()
         httpd.serve_forever()

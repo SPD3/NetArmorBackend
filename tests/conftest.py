@@ -6,6 +6,7 @@ from src.database import Database
 from src.models import Base
 from src.config import get_settings
 import contextlib
+from src.main import delete_all_table_contents
 
 def set_up_empty_test_db():
     settings = get_settings()
@@ -52,16 +53,9 @@ def set_up_empty_test_db():
         testdb = client.containers.get("TestDB")
     return testdb
 
-
 @pytest.fixture(scope="function", autouse=True)
-def delete_all_tables_contents():
-    meta = Base.metadata
-    with contextlib.closing(Database().get_engine().connect()) as con:
-        trans = con.begin()
-        tables = meta.sorted_tables
-        for table in reversed(tables):
-            con.execute(table.delete())
-        trans.commit()
+def delete_all_tables_contents_fixture():
+    delete_all_table_contents()
 
 
 @pytest.fixture(scope="session", autouse=True)

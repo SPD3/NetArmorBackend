@@ -5,6 +5,14 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
+from src.populate_tables import populate_tables
+from datetime import date
+from sqlalchemy import event
+from src.models import Base
+import contextlib
+
+from src import models
 
 
 def check_website_owner_credentials(email, password):
@@ -38,16 +46,35 @@ def delete_website_owner(email):
     db_session.commit()
     return True
 
+def delete_all_table_contents():
+    meta = Base.metadata
+    with contextlib.closing(Database().get_engine().connect()) as con:
+        trans = con.begin()
+        tables = meta.sorted_tables
+        for table in reversed(tables):
+            con.execute(table.delete())
+        trans.commit()
+
+def clear_tables():
+    delete_all_table_contents()
 
 def register_endpoints(app:App):
     app.register_endpoint("check_website_owner_credentials", check_website_owner_credentials, Endpoint.GET)
     app.register_endpoint("website_owner_exists", website_owner_exists, Endpoint.GET)
     app.register_endpoint("create_website_owner", create_website_owner, Endpoint.POST)
     app.register_endpoint("delete_website_owner", delete_website_owner, Endpoint.POST)
+    app.register_endpoint("check_expert_info", check_expert_info, Endpoint.GET)
+    app.register_endpoint("expert_exists", expert_exists, Endpoint.GET)
+    app.register_endpoint("create_expert_account", create_expert_account, Endpoint.POST)
+    app.register_endpoint("delete_expert", delete_expert, Endpoint.POST)
+    app.register_endpoint("add_expert_info", add_expert_info, Endpoint.POST)
+
 
     app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
     app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)
     app.register_endpoint("delete_cookie", delete_cookie, Endpoint.POST)
+
+    app.register_endpoint("clear_tables", clear_tables, Endpoint.GET)
 
 def main():
     db = Database()
@@ -61,7 +88,8 @@ def main():
         DBSession=db.get_session(False),
         init_model=init_model
     )
-    app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), db.get_url(), model_bunch)
+     
+    app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), db.get_url(), model_bunch, run_before_hosting=populate_tables)
 
 if __name__ == "__main__":
     main()
