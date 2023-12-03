@@ -5,17 +5,12 @@ from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
-from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info
+from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info
 from src.website_owner_endpoints import add_scan_result, get_scan_results, create_expert_request, get_website_owner_info, update_website_owner_info
 from src.populate_tables import populate_tables
-from datetime import date
-from sqlalchemy import event
 from src.models import Base
 import contextlib
 from src.certificate_endpoints import add_cert
-
-from src import models
-
 
 def check_website_owner_credentials(email, password):
     db_session = Database().get_session()

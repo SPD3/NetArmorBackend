@@ -78,4 +78,9 @@ def get_expert_info(email):
     for specialty in db_user.specialty:
         specialties_list.append(specialty.vulnerability)
     result["specialties"] = specialties_list
+    
+    client_list = []
+    for message in db_user.messages:
+        client_list.append(message.website_owner)
+    result["clients"] = client_list
     return result
