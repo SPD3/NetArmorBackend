@@ -25,7 +25,9 @@ def create_cookie(email:str, is_website_owner:bool):
 
     return cookie
 
-def validate_cookie(cookie:str, is_website_owner:bool):
+def validate_cookie(cookie:str, is_website_owner:string):
+    #Post methods must manually convert the bool to a bool bc it's a string initially
+    is_website_owner = is_website_owner == "true"
     db_session = Database().get_session()
     return get_email_from_cookie_and_is_website_owner(db_session, cookie, is_website_owner)
 
