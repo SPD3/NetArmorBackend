@@ -46,3 +46,4 @@ def get_scan_results(email:str):
 
     return return_res
     
+def update_website_owner_info()
