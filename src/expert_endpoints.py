@@ -44,13 +44,13 @@ def add_expert_info(email, image, sql, xss, nmap, jwt):
     if db_user is None:
         return False
     db_user.image = image
-    if convert_string_to_bool(sql):
+    if sql:
         add_specialty(db_session, email, SQL_INJECTION_NAME)
-    if convert_string_to_bool(xss):
+    if xss:
         add_specialty(db_session, email, XSS_NAME)
-    if convert_string_to_bool(nmap):
+    if nmap:
         add_specialty(db_session, email, NMAP_NAME)
-    if convert_string_to_bool(jwt):
+    if jwt:
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
     db_session.commit()
     return True

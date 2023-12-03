@@ -85,7 +85,7 @@ def test_delete_expert():
 def test_add_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     db = Database().get_session()
     query = db.query(models.Specialty).filter(models.Specialty.expert == DONALD_EMAIL).all()
     assert (len(query) == 2)
@@ -98,7 +98,7 @@ def test_add_expert_info():
 def test_get_expert_info():
     populate_vulnerabilities()
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
-    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, "true", "true", "false", "false")
+    add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     add_cert(PENTEST_IMAGE, DONALD_EMAIL)
     add_cert(CLOUD_IMAGE, DONALD_EMAIL)
     create_website_owner(MICKEY_EMAIL, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE)

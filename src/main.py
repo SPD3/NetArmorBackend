@@ -10,7 +10,7 @@ from src.website_owner_endpoints import add_scan_result, get_scan_results, creat
 from src.populate_tables import populate_tables
 from src.models import Base
 import contextlib
-from src.certificate_endpoints import add_cert
+from src.certificate_endpoints import add_cert, remove_cert
 
 def check_website_owner_credentials(email, password):
     db_session = Database().get_session()
@@ -68,6 +68,8 @@ def register_endpoints(app:App):
     app.register_endpoint("get_expert_info", get_expert_info, Endpoint.GET)
     
     app.register_endpoint("add_cert", add_cert, Endpoint.POST)
+    app.register_endpoint("remove_cert", remove_cert, Endpoint.POST)
+
 
     app.register_endpoint("create_cookie", create_cookie, Endpoint.POST)
     app.register_endpoint("validate_cookie", validate_cookie, Endpoint.GET)
