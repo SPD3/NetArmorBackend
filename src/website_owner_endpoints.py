@@ -97,12 +97,17 @@ EXPERT_EMAIL_KEY = "email"
 def get_applicable_expert_information(expert_db_models:List[models.CybersecurityExpert]):
     return_lst = []
     for expert_db_model in expert_db_models:
+        certifications = []
+        for certification in expert_db_model.certifications:
+            certifications.append(certification.image)
+        vulnerabilities = []
+        for vulnerability in expert_db_model.specialty
         return_lst.append({
-            EXPERT_FIRST_NAME_KEY : None,
-            EXPERT_LAST_NAME_KEY : None,
+            EXPERT_FIRST_NAME_KEY : expert_db_model.first_name,
+            EXPERT_LAST_NAME_KEY : expert_db_model.last_name,
             EXPERT_CERTIFICATIONS_KEY : None,
             EXPERT_VULNERABILITIES_KEY : None,
-            EXPERT_EMAIL_KEY : None,
+            EXPERT_EMAIL_KEY : expert_db_model.email,
         })
 
     return return_lst
