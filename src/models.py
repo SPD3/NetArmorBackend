@@ -18,8 +18,6 @@ class WebsiteOwner(Base):
     resource_ratings = relationship("ResourceRating", back_populates="owner")
     cybersecurity_expert_ratings = relationship("CybersecurityExpertRating", back_populates="owner")
     cybersecurity_expert_messages = relationship("Message", back_populates="owner")
-    cookie = relationship("Cookie", back_populates="owner", uselist=False)
-
     
 class Website(Base):
     __tablename__ = 'websites'
@@ -128,10 +126,9 @@ class Message(Base):
 class Cookie(Base):
     __tablename__ = 'cookies'
     
-    email = Column(String, ForeignKey("website_owners.email"), primary_key=True, nullable=False)
+    email = Column(String, primary_key=True, nullable=False)
     is_website_owner = Column(Boolean, primary_key=True, nullable=False)
     cookie_value = Column(String, nullable=False, unique=True)
     creation_time = Column(DateTime, nullable=False)
     
-    owner = relationship("WebsiteOwner", back_populates="cookie")
     
