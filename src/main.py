@@ -6,6 +6,8 @@ from tg.util import Bunch
 from src.netarmor_api import App, Endpoint
 from src.cookies_endpoints import create_cookie, validate_cookie, delete_cookie
 from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert
+from src.populate_tables import populate_tables, populate_vulnerabilities, create_vulnerability
+from datetime import date
 
 
 def check_website_owner_credentials(email, password):
@@ -66,7 +68,10 @@ def main():
         DBSession=db.get_session(False),
         init_model=init_model
     )
+    populate_tables()  
+    # create_vulnerability("JWT Cookie Hijacking", date.today())  
     app.run(settings.DATABASE_API_HOST_NAME, int(settings.DATABASE_API_PORT), db.get_url(), model_bunch)
+
 
 if __name__ == "__main__":
     main()
