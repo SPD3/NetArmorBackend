@@ -128,12 +128,12 @@ def update_expert_info(email:str, image:Union[str,None], password:Union[str,None
         
     if nmap == True:
         add_specialty(db_session, email, NMAP_NAME)
-    elif nmap == True:
+    elif nmap == False:
         delete_specialty(db_session, email, NMAP_NAME)
         
     if jwt == True:
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
-    elif jwt == True:
+    elif jwt == False:
         delete_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
         
     db_session.commit()
