@@ -13,6 +13,7 @@ import contextlib
 from src.models import Base
 from src.website_functions import add_website_owner
 from src.expert_functions import add_cybersecurity_expert, add_specialty
+from src.certificate_functions import add_issued_certification
 
 SQL_INJECTION_NAME = "SQL Injection"
 XSS_NAME = "Cross-Site Scripting"
@@ -51,7 +52,8 @@ def get_image_str(image_location:str):
     except:
         return ""
 
-def populate_sample_cybersecurity_experts():
+def populate_sample_data():
+    print("POPULATING SAMPLE DATA")
     sean_email = "spd7416@nyu.edu"
     andrew_email = "at4704@nyu.edu"
     jimmy_email = "js11718@nyu.edu"
@@ -61,6 +63,8 @@ def populate_sample_cybersecurity_experts():
     add_cybersecurity_expert(db_session, andrew_email, "andrewpassword", "Andrew", "Tang", get_image_str("images/andrew_profile_picture.png"))
     add_specialty(db_session, andrew_email, SQL_INJECTION_NAME)
     add_specialty(db_session, andrew_email, XSS_NAME)
+    add_issued_certification(db_session, get_image_str("images/andrew_cert_1.png"), andrew_email)
+    # add_issued_certification(db_session, get_image_str("images/andrew_cert_2.png"), andrew_email)
     add_cybersecurity_expert(db_session, jimmy_email, "jimmypassword", "Jimmy", "Shong", get_image_str("images/jimmy_profile_picture.png"))
     add_specialty(db_session, jimmy_email, NMAP_NAME)
     add_specialty(db_session, jimmy_email, XSS_NAME)
@@ -68,20 +72,16 @@ def populate_sample_cybersecurity_experts():
     add_specialty(db_session, mitchell_email, NMAP_NAME)
     add_specialty(db_session, mitchell_email, JWT_COOKIE_HIJACKING_NAME)
     add_specialty(db_session, mitchell_email, SQL_INJECTION_NAME)
-
+    # add_issued_certification(db_session, get_image_str("images/mitchell_cert_1.png"), mitchell_email)
     db_session.commit()
-
-
-def populate_sample_website_owners():
-    db_session = Database().get_session()
-    ... 
+    print("DONE POPULATING SAMPLE DATA")
+    
 
 def populate_tables():
     if is_already_pre_populated():
         return
     populate_vulnerabilities()
-    populate_sample_cybersecurity_experts()
-    populate_sample_website_owners()
+    populate_sample_data()
 
 
 
