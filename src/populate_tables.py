@@ -12,6 +12,7 @@ from sqlalchemy import event
 import contextlib
 from src.models import Base
 from src.website_functions import add_website_owner
+from src.expert_functions import add_cybersecurity_expert, add_specialty
 
 SQL_INJECTION_NAME = "SQL Injection"
 XSS_NAME = "Cross-Site Scripting"
@@ -52,8 +53,22 @@ def get_image_str(image_location:str):
 
 def populate_sample_cybersecurity_experts():
     sean_email = "spd7416@nyu.edu"
+    andrew_email = "at4704@nyu.edu"
+    jimmy_email = "js11718@nyu.edu"
+    mitchell_email = "mz2909@nyu.edu"
     db_session = Database().get_session()
     add_website_owner(db_session, sean_email, "seanpassword", "Sean", "Doyle", get_image_str("images/sean_profile_picture.png"))
+    add_cybersecurity_expert(db_session, andrew_email, "andrewpassword", "Andrew", "Tang", get_image_str("images/andrew_profile_picture.png"))
+    add_specialty(db_session, andrew_email, SQL_INJECTION_NAME)
+    add_specialty(db_session, andrew_email, XSS_NAME)
+    add_cybersecurity_expert(db_session, jimmy_email, "jimmypassword", "Jimmy", "Shong", get_image_str("images/jimmy_profile_picture.png"))
+    add_specialty(db_session, jimmy_email, NMAP_NAME)
+    add_specialty(db_session, jimmy_email, XSS_NAME)
+    add_cybersecurity_expert(db_session, mitchell_email, "mitchellpassword", "Mitchell", "Zhou", get_image_str("images/mitchell_profile_picture.png"))
+    add_specialty(db_session, mitchell_email, NMAP_NAME)
+    add_specialty(db_session, mitchell_email, JWT_COOKIE_HIJACKING_NAME)
+    add_specialty(db_session, mitchell_email, SQL_INJECTION_NAME)
+
     db_session.commit()
 
 
