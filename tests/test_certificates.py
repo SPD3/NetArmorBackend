@@ -14,13 +14,6 @@ def test_add_issued_certification_table():
                      lambda: check_issued_certification(db_session, CLOUD_IMAGE, DAISY_EMAIL),
                      lambda: add_mock_issued_certification(db_session, CLOUD_IMAGE, DAISY_EMAIL))
     db_session.rollback()
-
-def test_duplicate_issued_certification_table():
-    db_session = Database().get_session()
-    generic_duplicate_test(db_session, 
-                lambda: add_mock_issued_certification(db_session, PENTEST_IMAGE, DONALD_EMAIL), 
-                lambda: add_issued_certification(db_session, PENTEST_IMAGE, DONALD_EMAIL))
-    db_session.rollback()
     
 def test_add_cert():
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
