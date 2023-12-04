@@ -64,7 +64,7 @@ def populate_sample_data():
     add_specialty(db_session, andrew_email, SQL_INJECTION_NAME)
     add_specialty(db_session, andrew_email, XSS_NAME)
     add_issued_certification(db_session, get_image_str("images/andrew_cert_1.png"), andrew_email)
-    # add_issued_certification(db_session, get_image_str("images/andrew_cert_2.png"), andrew_email)
+    add_issued_certification(db_session, get_image_str("images/andrew_cert_2.png"), andrew_email)
     add_cybersecurity_expert(db_session, jimmy_email, "jimmypassword", "Jimmy", "Shong", get_image_str("images/jimmy_profile_picture.png"))
     add_specialty(db_session, jimmy_email, NMAP_NAME)
     add_specialty(db_session, jimmy_email, XSS_NAME)
@@ -72,10 +72,9 @@ def populate_sample_data():
     add_specialty(db_session, mitchell_email, NMAP_NAME)
     add_specialty(db_session, mitchell_email, JWT_COOKIE_HIJACKING_NAME)
     add_specialty(db_session, mitchell_email, SQL_INJECTION_NAME)
-    # add_issued_certification(db_session, get_image_str("images/mitchell_cert_1.png"), mitchell_email)
+    add_issued_certification(db_session, get_image_str("images/mitchell_cert_1.png"), mitchell_email)
     db_session.commit()
     print("DONE POPULATING SAMPLE DATA")
-    
 
 def populate_tables():
     if is_already_pre_populated():
