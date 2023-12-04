@@ -53,12 +53,12 @@ SQLI_LINK = "https://owasp.org/www-community/attacks/SQL_Injection/"
 SQLI_TITLE = "SQL Injection"
 SQLI_NAME = "SQL Injection"
 SQLI_DESCRIPTION = "SQL Injection is a code injection technique that might destroy your database."
-SQLI_DATE = date.today()
+SQLI_DATE_ADDED = date.today()
 SQLI_SUCCESS = True
 SQLI_RATING = 5
 
 
-XSS_NAME = "Cross Site Scripting"
+XSS_NAME = "Cross-Site Scripting"
 XSS_DATE_ADDED = date.today()
 XSS_LINK = "https://owasp.org/www-community/attacks/xss/"
 XSS_TITLE = "Cross Site Scripting (XSS)"

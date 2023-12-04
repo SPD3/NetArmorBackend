@@ -4,9 +4,11 @@ from src.config import settings
 from tg.util import Bunch
 
 from src.netarmor_api import App, Endpoint
-from src.expert_functions import add_specialty
+from src.expert_functions import add_specialty, delete_specialty
 from src.populate_tables import SQL_INJECTION_NAME, XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME
 from src.utils import convert_string_to_bool
+from typing import Union
+from src import models
 
 def check_expert_info(email, password):
     db_session = Database().get_session()
@@ -85,7 +87,7 @@ def get_expert_info(email):
     
     client_list = []
     for message in db_user.messages:
-        client_list.append(message.website_owner)
+        client_list.append({"email":message.website_owner, "message":message.payload})
     result["clients"] = client_list
     return result
 
@@ -96,5 +98,43 @@ def remove_client(expert_email, owner_email):
         return False
     db_message = crud.get_message_by_emails(db_session, expert_email, owner_email)
     db_session.delete(db_message)
+    db_session.commit()
+    return True
+
+def update_expert_info(email:str, image:Union[str,None], password:Union[str,None], 
+                       sql:Union[bool,None], xss:Union[bool,None], nmap:Union[bool,None], jwt:Union[bool,None]):
+    db_session = Database().get_session()
+    db_expert = db_session.query(models.CybersecurityExpert).filter(models.CybersecurityExpert.email==email).all()
+    
+    if len(db_expert) != 1:
+        return None
+    db_expert = db_expert[0]
+    
+    if image:
+        db_expert.image = image
+        
+    if password:
+        db_expert.password = password
+        
+    if sql == True:
+        add_specialty(db_session, email, SQL_INJECTION_NAME)
+    elif sql == False:
+        delete_specialty(db_session, email, SQL_INJECTION_NAME)
+        
+    if xss == True:
+        add_specialty(db_session, email, XSS_NAME)
+    elif xss == False:
+        delete_specialty(db_session, email, XSS_NAME)
+        
+    if nmap == True:
+        add_specialty(db_session, email, NMAP_NAME)
+    elif nmap == True:
+        delete_specialty(db_session, email, NMAP_NAME)
+        
+    if jwt == True:
+        add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
+    elif jwt == True:
+        delete_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
+        
     db_session.commit()
     return True
