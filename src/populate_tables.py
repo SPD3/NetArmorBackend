@@ -11,7 +11,7 @@ from src.config import get_settings
 from sqlalchemy import event
 import contextlib
 from src.models import Base
-from src import expert_endpoints
+from src.website_functions import add_website_owner
 
 SQL_INJECTION_NAME = "SQL Injection"
 XSS_NAME = "Cross-Site Scripting"
@@ -41,17 +41,20 @@ def is_already_pre_populated():
     return False
 
 def get_image_str(image_location:str):
+    prefix = "data:image/png;base64,"
     try:
-        with open("images/sean_profile_picture.png", "rb") as image:
-            return base64.b64encode(image.read())
+        with open(image_location, "rb") as image:
+            encoding = base64.b64encode(image.read())
+            encoding = str(encoding)[2:-1] # first two characters are b', last character is '
+            return prefix + encoding
     except:
         return ""
 
 def populate_sample_cybersecurity_experts():
     sean_email = "spd7416@nyu.edu"
-    
-    expert_endpoints.create_expert_account(sean_email, "seanpassword", "Sean", "Doyle")
-    expert_endpoints.add_expert_info(sean_email, get_image_str("images/sean_profile_picture"), True, True, False, False)
+    db_session = Database().get_session()
+    add_website_owner(db_session, sean_email, "seanpassword", "Sean", "Doyle", get_image_str("images/sean_profile_picture.png"))
+    db_session.commit()
 
 
 def populate_sample_website_owners():
