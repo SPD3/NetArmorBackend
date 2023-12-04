@@ -139,6 +139,7 @@ def test_delete_specialty_table():
     assert (check_specialty(db_session, DONALD_EMAIL, XSS_NAME) == False)
     assert (delete_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == True)
     assert (check_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == False)
+    db_session.rollback()
     
 def test_update_expert_info():
     populate_vulnerabilities()
