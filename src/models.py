@@ -40,7 +40,8 @@ class Resource(Base):
 
 class IssuedCertification(Base):
     __tablename__ = 'issued_certifications'
-    image = Column(String, primary_key=True, nullable=False)
+    cert_id = Column(Integer, primary_key=True, autoincrement=True)
+    image = Column(String, nullable=False)
     recipient = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
     expert = relationship("CybersecurityExpert", back_populates="certifications")
 
