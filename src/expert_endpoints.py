@@ -87,7 +87,7 @@ def get_expert_info(email):
     
     client_list = []
     for message in db_user.messages:
-        client_list.append(message.website_owner)
+        client_list.append({"email":message.website_owner, "message":message.payload})
     result["clients"] = client_list
     return result
 

@@ -113,7 +113,7 @@ def test_get_expert_info():
            and result["first_name"] == DONALD_FIRST_NAME and result["last_name"] == DONALD_LAST_NAME
            and result["image"] == DONALD_IMAGE and result["certifications"] == [PENTEST_IMAGE, CLOUD_IMAGE]
            and result["specialties"] == ["SQL Injection", "Cross-Site Scripting"]
-           and result["clients"] == [MICKEY_EMAIL, MINNIE_EMAIL])
+           and result["clients"] == [{"email": MICKEY_EMAIL, "message": MICKEY_MESSAGE}, {"email": MINNIE_EMAIL, "message": MINNIE_MESSAGE}])
 
 def test_remove_client():
     create_expert_account(DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME)
