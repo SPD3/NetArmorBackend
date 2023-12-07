@@ -64,7 +64,7 @@ class Specialty(Base):
     expert = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
     vulnerability = Column(String, ForeignKey('vulnerabilities.name'), primary_key=True, nullable=False)
     cybersecurity_expert = relationship("CybersecurityExpert", back_populates="specialty")
-    vulnerabilities = relationship("Vulnerability", back_populates="experts")
+    vulnerabilities = relationship("Vulnerability", back_populates="specialists")
     
 class Scan(Base):
     __tablename__ = 'scans'
@@ -84,7 +84,7 @@ class Vulnerability(Base):
     name = Column(String, primary_key=True, nullable=False, index=True)
     date_added = Column(Date, nullable=False)
     resources = relationship("Resource", back_populates="vulnerabilities")
-    experts = relationship("Specialty", back_populates="vulnerabilities")
+    specialists = relationship("Specialty", back_populates="vulnerabilities")
     tested_scans = relationship("TestedVulnerability", back_populates="vulnerabilities")
     
 class TestedVulnerability(Base):

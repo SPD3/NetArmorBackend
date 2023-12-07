@@ -1,4 +1,6 @@
 from src import models
+from sqlalchemy import and_
+
 
 # Cybersecurity Expert Functions
 def check_cybersecurity_expert(db_session, email, password, first_name, last_name, image):
@@ -38,7 +40,9 @@ def add_cybersecurity_expert_rating(db_session, email, expert_email, rating):
     
 # Specialty Functions
 def check_specialty(db_session, expert, vulnerability):
-    specialties = db_session.query(models.Specialty).filter(models.Specialty.expert==expert).filter(models.Specialty.vulnerability==vulnerability).all()
+    specialties = db_session.query(models.Specialty).filter(and_(models.Specialty.expert==expert, models.Specialty.vulnerability==vulnerability)).all()
+    # specialties = db_session.query(models.Specialty).filter(models.Specialty.expert==expert
+    #                                                         and models.Specialty.vulnerability==vulnerability).all()
     if len(specialties) != 1:
         return False
     specialty = specialties[0]
@@ -50,7 +54,7 @@ def add_specialty(db_session, expert, vulnerability):
     db_session.add(db_cybersecurity_expert)
     
 def delete_specialty(db_session, expert, vulnerability):
-    db_specialty = db_session.query(models.Specialty).filter(models.Specialty.expert == expert and models.Specialty.vulnerability == vulnerability).first()
+    db_specialty = db_session.query(models.Specialty).filter(and_(models.Specialty.expert==expert, models.Specialty.vulnerability==vulnerability)).first()
     if not db_specialty:
         return False
     db_session.delete(db_specialty)
