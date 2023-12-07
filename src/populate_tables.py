@@ -1,4 +1,5 @@
 import base64
+import datetime
 from .database import Database
 from src.config import settings
 
@@ -14,6 +15,9 @@ from src.models import Base
 from src.website_functions import add_website_owner
 from src.expert_functions import add_cybersecurity_expert, add_specialty
 from src.certificate_functions import add_issued_certification
+from src.website_functions import add_website
+from src.scan_functions import add_scan
+from src.vulnerability_functions import add_tested_vulnerability
 
 SQL_INJECTION_NAME = "SQL Injection"
 XSS_NAME = "Cross-Site Scripting"
@@ -59,7 +63,15 @@ def populate_sample_data():
     jimmy_email = "js11718@nyu.edu"
     mitchell_email = "mz2909@nyu.edu"
     db_session = Database().get_session()
+    url = "https://jiminator.github.io/Midterm/"
     add_website_owner(db_session, sean_email, "seanpassword", "Sean", "Doyle", get_image_str("images/sean_profile_picture.png"))
+    add_website(db_session=db_session, url=url, owner_email=sean_email, website_name=url)
+    scan_id = add_scan(db_session=db_session, owner_email=sean_email, url=url, deep=False, date=datetime.datetime.now())
+    add_tested_vulnerability(db_session, scan_id, SQL_INJECTION_NAME, 100, True, "All good")
+    add_tested_vulnerability(db_session, scan_id, XSS_NAME, 100, True, "All good")
+    add_tested_vulnerability(db_session, scan_id, NMAP_NAME, 0, True, "Fail")
+
+
     add_cybersecurity_expert(db_session, andrew_email, "andrewpassword", "Andrew", "Tang", get_image_str("images/andrew_profile_picture.png"))
     add_specialty(db_session, andrew_email, SQL_INJECTION_NAME)
     add_specialty(db_session, andrew_email, XSS_NAME)
