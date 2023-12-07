@@ -132,13 +132,20 @@ def test_delete_specialty_table():
     add_mock_specialty(db_session, DONALD_EMAIL, SQLI_NAME)
     add_vulnerability(db_session, XSS_NAME, XSS_DATE_ADDED)
     add_specialty(db_session, DONALD_EMAIL, XSS_NAME)
+    add_vulnerability(db_session, NMAP_NAME, XSS_DATE_ADDED)
+    add_specialty(db_session, DONALD_EMAIL, NMAP_NAME)
     assert (check_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == True)
     assert (check_specialty(db_session, DONALD_EMAIL, XSS_NAME) == True)
+    assert (check_specialty(db_session, DONALD_EMAIL, NMAP_NAME) == True)
     assert (delete_specialty(db_session, DONALD_EMAIL, XSS_NAME) == True)
     assert (check_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == True)
+    assert (check_specialty(db_session, DONALD_EMAIL, NMAP_NAME) == True)
     assert (check_specialty(db_session, DONALD_EMAIL, XSS_NAME) == False)
     assert (delete_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == True)
     assert (check_specialty(db_session, DONALD_EMAIL, SQLI_NAME) == False)
+    assert (check_specialty(db_session, DONALD_EMAIL, NMAP_NAME) == True)
+    assert (delete_specialty(db_session, DONALD_EMAIL, NMAP_NAME) == True)
+    assert (check_specialty(db_session, DONALD_EMAIL, NMAP_NAME) == False)
     db_session.rollback()
     
 def test_update_expert_info():
@@ -150,17 +157,21 @@ def test_update_expert_info():
     create_expert_request(MINNIE_EMAIL, DONALD_EMAIL, MINNIE_MESSAGE)
     add_expert_info(DONALD_EMAIL, DONALD_IMAGE, True, True, False, False)
     
+    assert(get_expert_info(DONALD_EMAIL)["image"] == DONALD_IMAGE
+        and get_expert_info(DONALD_EMAIL)["password"] == DONALD_PASSWORD
+        and get_expert_info(DONALD_EMAIL)["specialties"] == [SQL_INJECTION_NAME, XSS_NAME])
+    
     assert(update_expert_info(DONALD_EMAIL, DAISY_IMAGE, DAISY_PASSWORD, False, False, True, True) == True)
+    
     assert(get_expert_info(DONALD_EMAIL)["image"] == DAISY_IMAGE
            and get_expert_info(DONALD_EMAIL)["password"] == DAISY_PASSWORD
            and get_expert_info(DONALD_EMAIL)["specialties"] == [NMAP_NAME, JWT_COOKIE_HIJACKING_NAME])
     
-    assert(update_expert_info(DONALD_EMAIL, DAISY_IMAGE, DAISY_PASSWORD, False, False, True, True) == True)
-    assert(get_expert_info(DONALD_EMAIL)["image"] == DAISY_IMAGE
-           and get_expert_info(DONALD_EMAIL)["password"] == DAISY_PASSWORD
-           and get_expert_info(DONALD_EMAIL)["specialties"] == [NMAP_NAME, JWT_COOKIE_HIJACKING_NAME])
+    assert(update_expert_info(DONALD_EMAIL, DONALD_IMAGE, DONALD_PASSWORD, sql=None, xss=None, nmap=False, jwt=False) == True)
     
-    assert(update_expert_info(DONALD_EMAIL, DONALD_IMAGE, DONALD_PASSWORD, False, False, False, False) == True)
+    assert(get_expert_info(DONALD_EMAIL)["image"] == DONALD_IMAGE
+        and get_expert_info(DONALD_EMAIL)["password"] == DONALD_PASSWORD
+        and get_expert_info(DONALD_EMAIL)["specialties"] == [])
 
     assert(update_expert_info(DONALD_EMAIL, image=DAISY_IMAGE, password=None, sql=None, xss=None, nmap=None, jwt=None) == True)
     assert(get_expert_info(DONALD_EMAIL)["image"] == DAISY_IMAGE)
@@ -179,3 +190,15 @@ def test_update_expert_info():
     
     assert(update_expert_info(DONALD_EMAIL, image=None, password=None, sql=None, xss=None, nmap=None, jwt=True) == True)
     assert(get_expert_info(DONALD_EMAIL)["specialties"] == [SQL_INJECTION_NAME, XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME])
+
+    assert(update_expert_info(DONALD_EMAIL, image=None, password=None, sql=False, xss=None, nmap=None, jwt=None) == True)
+    assert(get_expert_info(DONALD_EMAIL)["specialties"] == [XSS_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME])
+    
+    assert(update_expert_info(DONALD_EMAIL, image=None, password=None, sql=None, xss=False, nmap=None, jwt=None) == True)
+    assert(get_expert_info(DONALD_EMAIL)["specialties"] == [NMAP_NAME, JWT_COOKIE_HIJACKING_NAME])
+    
+    assert(update_expert_info(DONALD_EMAIL, image=None, password=None, sql=None, xss=None, nmap=False, jwt=None) == True)
+    assert(get_expert_info(DONALD_EMAIL)["specialties"] == [JWT_COOKIE_HIJACKING_NAME])
+    
+    assert(update_expert_info(DONALD_EMAIL, image=None, password=None, sql=None, xss=None, nmap=None, jwt=False) == True)
+    assert(get_expert_info(DONALD_EMAIL)["specialties"] == [])
