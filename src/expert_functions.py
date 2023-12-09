@@ -20,22 +20,7 @@ def add_cybersecurity_expert(db_session, email, password, first_name, last_name,
                                                          last_name=last_name,
                                                          image=image)
     db_session.add(db_cybersecurity_expert)
-    
-    
-# CybersecurityExpert Rating Functions
-def check_cybersecurity_expert_rating(db_session, website_owner, cybersecurity_expert, rating):
-    cybersecurity_expert_ratings = db_session.query(models.CybersecurityExpertRating).filter(
-                                        models.CybersecurityExpertRating.website_owner==website_owner
-                                        and models.CybersecurityExpertRating.cybersecurity_expert==cybersecurity_expert).all()
-    if len(cybersecurity_expert_ratings) != 1:
-        return False
-    cybersecurity_expert_rating = cybersecurity_expert_ratings[0]
-    return cybersecurity_expert_rating is not None and (cybersecurity_expert_rating.rating == rating)
 
-
-def add_cybersecurity_expert_rating(db_session, email, expert_email, rating):
-    db_expert_rating = models.CybersecurityExpertRating(website_owner=email, cybersecurity_expert=expert_email, rating=rating)
-    db_session.add(db_expert_rating)
     
     
 # Specialty Functions

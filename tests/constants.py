@@ -55,14 +55,12 @@ SQLI_NAME = "SQL Injection"
 SQLI_DESCRIPTION = "SQL Injection is a code injection technique that might destroy your database."
 SQLI_DATE_ADDED = date.today()
 SQLI_SUCCESS = True
-SQLI_RATING = 5
 
 
 XSS_NAME = "Cross-Site Scripting"
 XSS_DATE_ADDED = date.today()
 XSS_LINK = "https://owasp.org/www-community/attacks/xss/"
 XSS_TITLE = "Cross Site Scripting (XSS)"
-XSS_RATING = 4
 XSS_SUCCESS = False
 XSS_DESCRIPTION = "Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites."
 
@@ -70,14 +68,12 @@ DONALD_EMAIL = "donald@duck.com"
 DONALD_PASSWORD = "12345"
 DONALD_FIRST_NAME = "Donald"
 DONALD_LAST_NAME = "Duck"
-DONALD_RATING = 5
 DONALD_IMAGE = "donald image"
 
 DAISY_EMAIL = "daisy@duck.com"
 DAISY_PASSWORD = "6789"
 DAISY_FIRST_NAME = "Daisy"
 DAISY_LAST_NAME = "Duck"
-DAISY_RATING = 4
 DAISY_IMAGE = "daisy image"
 
 TEST_IMAGE = ""
