@@ -1,9 +1,9 @@
 import pytest
 from src.database import Database
-from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_RATING, DAISY_IMAGE, MINNIE_EMAIL, XSS_NAME, DONALD_EMAIL, MICKEY_EMAIL, SQLI_NAME, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE, DONALD_RATING, TEST_IMAGE, PENTEST_IMAGE, CLOUD_IMAGE, MICKEY_IMAGE, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_MESSAGE, MINNIE_MESSAGE, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, XSS_DATE_ADDED, SQLI_DATE_ADDED
+from tests.constants import DAISY_EMAIL, DAISY_PASSWORD, DAISY_FIRST_NAME, DAISY_LAST_NAME, DAISY_IMAGE, MINNIE_EMAIL, XSS_NAME, DONALD_EMAIL, MICKEY_EMAIL, SQLI_NAME, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE, TEST_IMAGE, PENTEST_IMAGE, CLOUD_IMAGE, MICKEY_IMAGE, MICKEY_PASSWORD, MICKEY_FIRST_NAME, MICKEY_LAST_NAME, MICKEY_IMAGE, MICKEY_MESSAGE, MINNIE_MESSAGE, MINNIE_PASSWORD, MINNIE_FIRST_NAME, MINNIE_LAST_NAME, MINNIE_IMAGE, XSS_DATE_ADDED, SQLI_DATE_ADDED
 from tests.test_main import generic_add_test, generic_duplicate_test
-from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_cybersecurity_expert_rating, add_cybersecurity_expert_rating, check_specialty, add_specialty, delete_specialty
-from tests.helpers.expert_helpers import add_mock_expert_rating, add_mock_specialty
+from src.expert_functions import check_cybersecurity_expert, add_cybersecurity_expert, check_specialty, add_specialty, delete_specialty
+from tests.helpers.expert_helpers import add_mock_specialty
 from src.expert_endpoints import check_expert_info, expert_exists, create_expert_account, delete_expert, add_expert_info, get_expert_info, remove_client, update_expert_info
 from src.populate_tables import populate_vulnerabilities, SQL_INJECTION_NAME, NMAP_NAME, JWT_COOKIE_HIJACKING_NAME
 from src.certificate_endpoints import add_cert
@@ -28,21 +28,6 @@ def test_duplicate_cybersecurity_expert_table():
     generic_duplicate_test(db_session, 
                 lambda: add_cybersecurity_expert(db_session, DONALD_EMAIL, DONALD_PASSWORD, DONALD_FIRST_NAME, DONALD_LAST_NAME, DONALD_IMAGE),
                 lambda: add_cybersecurity_expert(db_session, DONALD_EMAIL, DONALD_PASSWORD+"a", DONALD_FIRST_NAME+"a", DONALD_LAST_NAME+"a", DONALD_IMAGE+"a"))
-    db_session.rollback()
-    
-def test_add_expert_rating():
-    db_session = Database().get_session()
-    generic_add_test(lambda: check_cybersecurity_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING), 
-                     lambda: add_mock_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING), 
-                     lambda: check_cybersecurity_expert_rating(db_session, MINNIE_EMAIL, DAISY_EMAIL, DAISY_RATING),
-                     lambda: add_mock_expert_rating(db_session, MINNIE_EMAIL, DAISY_EMAIL, DAISY_RATING))
-    db_session.rollback()
-
-def test_duplicate_expert_rating():
-    db_session = Database().get_session()
-    generic_duplicate_test(db_session, 
-                           lambda: add_mock_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING),
-                           lambda: add_cybersecurity_expert_rating(db_session, MICKEY_EMAIL, DONALD_EMAIL, DONALD_RATING-1))
     db_session.rollback()
     
 def test_add_specialty_table():

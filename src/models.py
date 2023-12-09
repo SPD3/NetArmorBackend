@@ -15,8 +15,6 @@ class WebsiteOwner(Base):
     image = Column(String, nullable=False)
     websites = relationship("Website", back_populates="owner")
     scans = relationship("Scan", back_populates="owner")
-    resource_ratings = relationship("ResourceRating", back_populates="owner")
-    cybersecurity_expert_ratings = relationship("CybersecurityExpertRating", back_populates="owner")
     cybersecurity_expert_messages = relationship("Message", back_populates="owner")
     
 class Website(Base):
@@ -35,7 +33,6 @@ class Resource(Base):
     title = Column(String, nullable=False) 
     vulnerability = Column(String, ForeignKey('vulnerabilities.name'), nullable=False)
     vulnerabilities = relationship("Vulnerability", back_populates="resources")
-    ratings = relationship("ResourceRating", back_populates="resource")
 
 
 class IssuedCertification(Base):
@@ -55,7 +52,6 @@ class CybersecurityExpert(Base):
     image = Column(String, nullable=False)
     certifications = relationship("IssuedCertification", back_populates="expert")
     specialty = relationship("Specialty", back_populates="cybersecurity_expert")
-    ratings = relationship("CybersecurityExpertRating", back_populates="expert")
     messages = relationship("Message", back_populates="expert")
 
     
@@ -96,22 +92,6 @@ class TestedVulnerability(Base):
     description = Column(String, nullable=True)
     vulnerabilities = relationship("Vulnerability", back_populates="tested_scans")
     scans = relationship("Scan", back_populates="tested_vulnerabilities")
-    
-class ResourceRating(Base):
-    __tablename__ = 'resouce_ratings'
-    website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
-    resource_url = Column(String, ForeignKey('resources.resource_url'), primary_key=True, nullable=False)
-    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=True)
-    resource = relationship("Resource", back_populates="ratings")
-    owner = relationship("WebsiteOwner", back_populates="resource_ratings")
-    
-class CybersecurityExpertRating(Base):
-    __tablename__ = 'cybersecurity_expert_ratings'
-    website_owner = Column(String, ForeignKey('website_owners.email'), primary_key=True, nullable=False)
-    cybersecurity_expert = Column(String, ForeignKey('cybersecurity_experts.email'), primary_key=True, nullable=False)
-    rating = Column(Integer, CheckConstraint('rating >= 1 AND rating <= 5'), nullable=True)
-    expert = relationship("CybersecurityExpert", back_populates="ratings")
-    owner = relationship("WebsiteOwner", back_populates="cybersecurity_expert_ratings")
     
 class Message(Base):
     __tablename__ = 'messages'
