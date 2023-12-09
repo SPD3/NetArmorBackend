@@ -115,25 +115,25 @@ def update_expert_info(email:str, image:Union[str,None], password:Union[str,None
         
     if password:
         db_expert.password = password
-        
+
     if sql == True:
         add_specialty(db_session, email, SQL_INJECTION_NAME)
-    elif sql == False:
+    if sql == False:
         delete_specialty(db_session, email, SQL_INJECTION_NAME)
         
     if xss == True:
         add_specialty(db_session, email, XSS_NAME)
-    elif xss == False:
+    if xss == False:
         delete_specialty(db_session, email, XSS_NAME)
         
     if nmap == True:
         add_specialty(db_session, email, NMAP_NAME)
-    elif nmap == False:
+    if nmap == False:
         delete_specialty(db_session, email, NMAP_NAME)
         
     if jwt == True:
         add_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
-    elif jwt == False:
+    if jwt == False:
         delete_specialty(db_session, email, JWT_COOKIE_HIJACKING_NAME)
         
     db_session.commit()
